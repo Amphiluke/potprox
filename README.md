@@ -17,7 +17,7 @@ Use the module in [environments with ES6 support](https://kangax.github.io/compa
 
 ## Install
 
-**As NodeJS module:**
+**As a NodeJS module:**
 
 ```
 npm install potprox
