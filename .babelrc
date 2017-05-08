@@ -1,0 +1,6 @@
+{
+  "presets": [
+    // disable the minify-builtins plugin as it generates global variables
+    ["babili", {"builtIns": false}]
+  ]
+}

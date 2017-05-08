@@ -1,0 +1,33 @@
+{
+  "name": "potprox",
+  "version": "0.1.0",
+  "description": "Approximation of computed data with empirical pair potentials",
+  "main": "src/potprox.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/potprox.js --standalone potprox -o dist/potprox.js && babel dist/potprox.js -o dist/potprox.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amphiluke/potprox.git"
+  },
+  "keywords": [
+    "potential",
+    "approximation",
+    "morse",
+    "lennard-jones"
+  ],
+  "author": "Amphiluke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Amphiluke/potprox/issues"
+  },
+  "homepage": "https://github.com/Amphiluke/potprox#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-babili": "0.0.12",
+    "browserify": "^14.3.0",
+    "eslint": "^3.19.0"
+  }
+}
