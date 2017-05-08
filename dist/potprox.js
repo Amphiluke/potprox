@@ -63,7 +63,7 @@ class LennardJones {
     }
 
     /**
-     * Calculate energy for the given interatomic distance
+     * Calculate the energy for the given interatomic distance
      * @param {Number} r
      * @returns {Number}
      */
