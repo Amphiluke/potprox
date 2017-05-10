@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="description" content="Approximation of computed data with empirical pair potentials">
+    <meta name="keywords" content="potential, approximation, morse, lennard-jones">
+    <title>potprox — Potential Approximation</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/png" href="favicon.png"/>
+</head>
+<body>
+
+<main>
+    <h1>potprox — Potential Approximation</h1>
+
+    <form action="#" autocomplete="off" id="ctrl-form">
+        <fieldset class="input-group">
+            <legend>&#x2460; Input data</legend>
+            <div class="ctrl-set">
+                <div class="ctrl">
+                    <label for="file">Choose a CSV file with the data to approximate</label><br>
+                    <input type="file" id="file" accept=".csv"><br><br>
+                    …or type/paste the data directly into the text area
+                </div>
+                <div class="ctrl">
+                    <label for="data">Approximated data</label><br>
+                    <textarea id="data" cols="30" rows="6">8.0,-0.012978
+7.9,-0.014204
+7.8,-0.015505
+7.7,-0.016882
+7.6,-0.018339
+7.5,-0.019875
+7.4,-0.021494
+7.3,-0.023194
+7.2,-0.024977
+7.1,-0.026840
+7.0,-0.028782
+6.9,-0.030799
+6.8,-0.032886
+6.7,-0.035035
+6.6,-0.037237
+6.5,-0.039479
+6.4,-0.041746
+6.3,-0.044015
+6.2,-0.046262
+6.1,-0.048454
+6.0,-0.050553
+5.9,-0.052509
+5.8,-0.054264
+5.7,-0.055746
+5.6,-0.056870
+5.5,-0.057529
+5.4,-0.057599
+5.3,-0.056928
+5.2,-0.055333
+5.1,-0.052595
+5.0,-0.048450
+4.9,-0.042581
+4.8,-0.034606
+4.7,-0.024064
+4.6,-0.010401
+4.5,0.0070517</textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="potential-group">
+            <legend>&#x2461; Potential</legend>
+            <div class="ctrl-set">
+                <div class="ctrl">
+                    <label for="potential">Select an approximating potential</label><br>
+                    <select id="potential">
+                        <option value="LennardJones">Lennard-Jones</option>
+                        <option value="Morse" selected>Morse</option>
+                    </select>
+                </div>
+                <div class="ctrl">
+                    <img src="img/lennard-jones.svg" alt="The Lennard-Jones potential" data-potential="LennardJones" class="hidden">
+                    <img src="img/morse.svg" alt="The Morse potential" data-potential="Morse">
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="result-group">
+            <legend>&#x2462; Results</legend>
+            <button type="submit">Recalculate</button>
+            <samp class="result hidden" data-potential="LennardJones">
+                <var>ε</var>&nbsp;=&nbsp;<span data-param="epsilon">N/A</span>;
+                <var>σ</var>&nbsp;=&nbsp;<span data-param="sigma">N/A</span>
+            </samp>
+            <samp class="result" data-potential="Morse">
+                <var>D<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="d0">N/A</span>;
+                <var>r<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="r0">N/A</span>;
+                <var>a</var>&nbsp;=&nbsp;<span data-param="a">N/A</span>
+            </samp>
+        </fieldset>
+
+        <figure class="graph-group">
+            <figcaption>&#x2463; Graph</figcaption>
+            <canvas id="graph"></canvas>
+        </figure>
+    </form>
+</main>
+
+<footer>
+    © 2017 Amphiluke<br>
+    <a href="https://github.com/Amphiluke/potprox" target="_blank">potprox on GitHub</a>
+</footer>
+
+<div id="legacy-warning" class="legacy-warning hidden">
+    Unfortunately, your browser doesn't support ECMAScript 6. To proceed working with potprox, please use the latest versions of such browsers as Chrome, Firefox, Edge, Safari, or Opera.
+</div>
+<script>
+    if (typeof window.Promise === "undefined") {
+        document.getElementById("legacy-warning").classList.remove("hidden");
+    }
+</script>
+
+<script src="js/vendor/Chart.min.js"></script>
+<script src="js/vendor/potprox.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
