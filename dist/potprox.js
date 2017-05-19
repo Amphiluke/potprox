@@ -77,6 +77,10 @@ class LennardJones {
         let {epsilon, sigma} = this;
         return 4 * epsilon * (Math.pow(sigma / r, 12) - Math.pow(sigma / r, 6));
     }
+
+    toJSON() {
+        return {epsilon: this.epsilon, sigma: this.sigma};
+    }
 }
 
 module.exports = LennardJones;
@@ -243,15 +247,191 @@ class Morse {
         let factor = 1 - Math.exp(a * (r0 - r));
         return d0 * factor * factor - d0;
     }
+
+    toJSON() {
+        return {d0: this.d0, r0: this.r0, a: this.a};
+    }
 }
 
 module.exports = Morse;
 },{}],3:[function(require,module,exports){
+let instanceData = new WeakMap();
+
+class Rydberg {
+    constructor({d0 = 1, r0 = 1, b = 2} = {}) {
+        instanceData.set(this, {});
+        this.d0 = d0;
+        this.r0 = r0;
+        this.b = b;
+    }
+
+    /**
+     * Create an instance of the Rydberg potential via approximation of input data.
+     * This method performs fast initial approximation and is not very accurate.
+     * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @returns {Rydberg}
+     * @static
+     */
+    static fastFrom(data) {
+        if (!Array.isArray(data)) {
+            throw new TypeError("Approximated data should be an array of points");
+        }
+        if (data.length < 3) {
+            throw new Error("Too little points. Approximation is impossible");
+        }
+        data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
+        let d0 = Number.POSITIVE_INFINITY;
+        let r0 = 1;
+        for (let {r, e} of data) {
+            if (e < d0) {
+                d0 = e;
+                r0 = r;
+            }
+        }
+        d0 = Math.abs(d0);
+        let pt1, pt2;
+        for (let i = 1; i < data.length; i++) {
+            pt1 = data[i - 1];
+            pt2 = data[i];
+            if (pt2.r >= r0 || pt1.e < 0 || pt2.e < 0) {
+                break;
+            }
+        }
+        let b;
+        if (pt1 && pt2 && pt1.r < r0 && pt2.r <= r0) {
+            let sigma = pt1.e * (pt1.r - pt2.r) / (pt2.e - pt1.e) + pt1.r;
+            if (sigma > 0) {
+                b = r0 / (r0 - sigma);
+            }
+        }
+        return new Rydberg({d0, r0, b});
+    }
+
+    /**
+     * Create an instance of the Rydberg potential via approximation of input data.
+     * This method gives more accurate approximation results than the `fastFrom` method.
+     * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @returns {Rydberg}
+     * @static
+     */
+    static from(data) {
+        let rydberg = this.fastFrom(data);
+        let {d0, r0, b} = rydberg; // initial approximation
+
+        // Convergence limits
+        const d0Lim = d0 / 1000;
+        const r0Lim = r0 / 1000;
+        const bLim = b / 1000;
+
+        // Deltas
+        let dd0, dr0, db;
+
+        do {
+            let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
+            for (let {r, e} of data) {
+                let factor = b * (r / r0 - 1);
+                let exp = Math.exp(-factor);
+                let k = -d0 * (1 + factor) * exp;
+                let l = (-1 - factor) * exp;
+                let m = -d0 * b * r / (r0 * r0) * exp * factor;
+                let n = d0 * factor / b * exp * factor;
+
+                c1 += l * l;
+                c2 += m * l;
+                c3 += n * l;
+                c4 += (k - e) * l;
+                c5 += m * m;
+                c6 += n * m;
+                c7 += (k - e) * m;
+                c8 += n * n;
+                c9 += (k - e) * n;
+            }
+
+            db = -((c4 - c1 * c7 / c2) - (c4 - c1 * c9 / c3) * ((c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3))) /
+                ((c3 - c1 * c6 / c2) - (c3 - c1 * c8 / c3) * (c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3));
+            dr0 = ((c3 - c1 * c6 / c2) * db + (c4 - c1 * c7 / c2)) / (c1 * c5 / c2 - c2);
+            dd0 = (-c2 * dr0 - c3 * db - c4) / c1;
+
+            d0 += dd0;
+            r0 += dr0;
+            b += db;
+        } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(db) > bLim));
+
+        rydberg.d0 = d0;
+        rydberg.r0 = r0;
+        rydberg.b = b;
+        return rydberg;
+    }
+
+    get d0() {
+        return instanceData.get(this).d0;
+    }
+    set d0(value) {
+        if (!Number.isFinite(value)) {
+            throw new TypeError("The 'd0' parameter should be a finite number");
+        }
+        if (value <= 0) {
+            throw new RangeError("The 'd0' parameter should be greater than zero");
+        }
+        instanceData.get(this).d0 = value;
+    }
+
+    get r0() {
+        return instanceData.get(this).r0;
+    }
+    set r0(value) {
+        if (!Number.isFinite(value)) {
+            throw new TypeError("The 'r0' parameter should be a finite number");
+        }
+        if (value <= 0) {
+            throw new RangeError("The 'r0' parameter should be greater than zero");
+        }
+        instanceData.get(this).r0 = value;
+    }
+
+    get b() {
+        return instanceData.get(this).b;
+    }
+    set b(value) {
+        if (!Number.isFinite(value)) {
+            throw new TypeError("The 'b' parameter should be a finite number");
+        }
+        if (value <= 1) {
+            throw new RangeError("The 'b' parameter should be greater than 1");
+        }
+        instanceData.get(this).b = value;
+    }
+
+    /**
+     * Calculate energy for the given interatomic distance
+     * @param {Number} r
+     * @returns {Number}
+     */
+    at(r) {
+        if (typeof r !== "number") {
+            throw new TypeError("Distance should be a number");
+        }
+        if (r < 0) {
+            throw new RangeError("Distance shouldn't be less than zero");
+        }
+        let {d0, r0, b} = this;
+        let factor = b * (r - r0) / r0;
+        return -d0 * (1 + factor) * Math.exp(-factor);
+    }
+
+    toJSON() {
+        return {d0: this.d0, r0: this.r0, b: this.b};
+    }
+}
+
+module.exports = Rydberg;
+},{}],4:[function(require,module,exports){
 let potprox = {
     LennardJones: require("./potentials/lennard-jones.js"),
-    Morse: require("./potentials/morse.js")
+    Morse: require("./potentials/morse.js"),
+    Rydberg: require("./potentials/rydberg.js")
 };
 
 module.exports = potprox;
-},{"./potentials/lennard-jones.js":1,"./potentials/morse.js":2}]},{},[3])(3)
+},{"./potentials/lennard-jones.js":1,"./potentials/morse.js":2,"./potentials/rydberg.js":3}]},{},[4])(4)
 });

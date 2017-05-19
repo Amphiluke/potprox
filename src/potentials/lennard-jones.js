@@ -76,6 +76,10 @@ class LennardJones {
         let {epsilon, sigma} = this;
         return 4 * epsilon * (Math.pow(sigma / r, 12) - Math.pow(sigma / r, 6));
     }
+
+    toJSON() {
+        return {epsilon: this.epsilon, sigma: this.sigma};
+    }
 }
 
 module.exports = LennardJones;

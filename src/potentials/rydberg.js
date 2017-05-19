@@ -1,18 +1,18 @@
 let instanceData = new WeakMap();
 
-class Morse {
-    constructor({d0 = 1, r0 = 1, a = 1} = {}) {
+class Rydberg {
+    constructor({d0 = 1, r0 = 1, b = 2} = {}) {
         instanceData.set(this, {});
         this.d0 = d0;
         this.r0 = r0;
-        this.a = a;
+        this.b = b;
     }
 
     /**
-     * Create an instance of the Morse potential via approximation of input data.
+     * Create an instance of the Rydberg potential via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
-     * @returns {Morse}
+     * @returns {Rydberg}
      * @static
      */
     static fastFrom(data) {
@@ -22,6 +22,7 @@ class Morse {
         if (data.length < 3) {
             throw new Error("Too little points. Approximation is impossible");
         }
+        data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
         let d0 = Number.POSITIVE_INFINITY;
         let r0 = 1;
         for (let {r, e} of data) {
@@ -31,52 +32,52 @@ class Morse {
             }
         }
         d0 = Math.abs(d0);
-        let a = 0;
-        let counter = 0;
-        for (let {r, e} of data) {
-            let eFactor = Math.sqrt(1 + e / d0);
-            let aTemp = Number.NaN;
-            if (r > r0) {
-                aTemp = Math.log(1 - eFactor) / (r0 - r);
-            } else if (r < r0) {
-                aTemp = Math.log(1 + eFactor) / (r0 - r);
-            }
-            if (Number.isFinite(aTemp)) {
-                a += aTemp;
-                counter++;
+        let pt1, pt2;
+        for (let i = 1; i < data.length; i++) {
+            pt1 = data[i - 1];
+            pt2 = data[i];
+            if (pt2.r >= r0 || pt1.e < 0 || pt2.e < 0) {
+                break;
             }
         }
-        a /= counter;
-        return new Morse({d0, r0, a});
+        let b;
+        if (pt1 && pt2 && pt1.r < r0 && pt2.r <= r0) {
+            let sigma = pt1.e * (pt1.r - pt2.r) / (pt2.e - pt1.e) + pt1.r;
+            if (sigma > 0) {
+                b = r0 / (r0 - sigma);
+            }
+        }
+        return new Rydberg({d0, r0, b});
     }
 
     /**
-     * Create an instance of the Morse potential via approximation of input data.
+     * Create an instance of the Rydberg potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
-     * @returns {Morse}
+     * @returns {Rydberg}
      * @static
      */
     static from(data) {
-        let morse = this.fastFrom(data);
-        let {d0, r0, a} = morse; // initial approximation
+        let rydberg = this.fastFrom(data);
+        let {d0, r0, b} = rydberg; // initial approximation
 
         // Convergence limits
         const d0Lim = d0 / 1000;
         const r0Lim = r0 / 1000;
-        const aLim = a / 1000;
+        const bLim = b / 1000;
 
         // Deltas
-        let dd0, dr0, da;
+        let dd0, dr0, db;
 
         do {
             let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
             for (let {r, e} of data) {
-                let exp = Math.exp(a * (r0 - r));
-                let k = -d0 + d0 * (1 - exp) * (1 - exp);
-                let l = (1 - exp) * (1 - exp) - 1;
-                let m = -2 * d0 * (1 - exp) * a * exp;
-                let n = 2 * d0 * (1 - exp) * (r - r0) * exp;
+                let factor = b * (r / r0 - 1);
+                let exp = Math.exp(-factor);
+                let k = -d0 * (1 + factor) * exp;
+                let l = (-1 - factor) * exp;
+                let m = -d0 * b * r / (r0 * r0) * exp * factor;
+                let n = d0 * factor / b * exp * factor;
 
                 c1 += l * l;
                 c2 += m * l;
@@ -89,20 +90,20 @@ class Morse {
                 c9 += (k - e) * n;
             }
 
-            da = -((c4 - c1 * c7 / c2) - (c4 - c1 * c9 / c3) * ((c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3))) /
+            db = -((c4 - c1 * c7 / c2) - (c4 - c1 * c9 / c3) * ((c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3))) /
                 ((c3 - c1 * c6 / c2) - (c3 - c1 * c8 / c3) * (c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3));
-            dr0 = ((c3 - c1 * c6 / c2) * da + (c4 - c1 * c7 / c2)) / (c1 * c5 / c2 - c2);
-            dd0 = (-c2 * dr0 - c3 * da - c4) / c1;
+            dr0 = ((c3 - c1 * c6 / c2) * db + (c4 - c1 * c7 / c2)) / (c1 * c5 / c2 - c2);
+            dd0 = (-c2 * dr0 - c3 * db - c4) / c1;
 
             d0 += dd0;
             r0 += dr0;
-            a += da;
-        } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(da) > aLim));
+            b += db;
+        } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(db) > bLim));
 
-        morse.d0 = d0;
-        morse.r0 = r0;
-        morse.a = a;
-        return morse;
+        rydberg.d0 = d0;
+        rydberg.r0 = r0;
+        rydberg.b = b;
+        return rydberg;
     }
 
     get d0() {
@@ -131,17 +132,17 @@ class Morse {
         instanceData.get(this).r0 = value;
     }
 
-    get a() {
-        return instanceData.get(this).a;
+    get b() {
+        return instanceData.get(this).b;
     }
-    set a(value) {
+    set b(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'a' parameter should be a finite number");
+            throw new TypeError("The 'b' parameter should be a finite number");
         }
-        if (value <= 0) {
-            throw new RangeError("The 'a' parameter should be greater than zero");
+        if (value <= 1) {
+            throw new RangeError("The 'b' parameter should be greater than 1");
         }
-        instanceData.get(this).a = value;
+        instanceData.get(this).b = value;
     }
 
     /**
@@ -156,14 +157,14 @@ class Morse {
         if (r < 0) {
             throw new RangeError("Distance shouldn't be less than zero");
         }
-        let {d0, r0, a} = this;
-        let factor = 1 - Math.exp(a * (r0 - r));
-        return d0 * factor * factor - d0;
+        let {d0, r0, b} = this;
+        let factor = b * (r - r0) / r0;
+        return -d0 * (1 + factor) * Math.exp(-factor);
     }
 
     toJSON() {
-        return {d0: this.d0, r0: this.r0, a: this.a};
+        return {d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 
-module.exports = Morse;
+module.exports = Rydberg;
