@@ -90,7 +90,7 @@ console.log(potprox); // => Object {LennardJones: <class>, Morse: <class>, ...}
 
 The `LennardJones` class instance represents the Lennard-Jones potential with the given parameters `epsilon` and `sigma`.
 
-![V(r)=4*epsilon((sigma/r)^12-(sigma/r)^6)](https://latex.codecogs.com/svg.latex?V(r)=4\varepsilon\left[\left(\frac{\sigma}{r}\right)^{12}-\left(\frac{\sigma}{r}\right)^{6}\right])
+![V(r)=4*epsilon((sigma/r)^12-(sigma/r)^6)](https://latex.codecogs.com/svg.latex?V&#40;r&#41;=4\varepsilon\left[\left&#40;\frac{\sigma}{r}\right&#41;^{12}-\left&#40;\frac{\sigma}{r}\right&#41;^{6}\right])
 
 You may instantiate the LennardJones class as follows:
 
@@ -102,7 +102,7 @@ let lj = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
 
 The `Morse` class instance represents the Morse potential with the given parameters `d0`, `r0`, and `a` (which are often referenced to as *D<sub>e</sub>*, *r<sub>e</sub>*, and *α* respectively).
 
-![V(r)=-d0+d0(1-exp(-a*(r-r0)))^2](https://latex.codecogs.com/gif.latex?V(r)=-D_{0}&plus;D_{0}\left[1-\exp\left(-a\left(r-r_{0}\right)\right)\right]^{2})
+![V(r)=-d0+d0(1-exp(-a*(r-r0)))^2](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=-D_{0}&plus;D_{0}\left[1-\exp\left&#40;-a\left&#40;r-r_{0}\right&#41;\right&#41;\right]^{2})
 
 You may instantiate the Morse class as follows:
 
@@ -114,7 +114,7 @@ let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
 
 The `Rydberg` class instance represents the Rydberg potential with the given parameters `d0`, `r0`, and `b`.
 
-![V(r)=d0((1-exp(-a*(r-r0)))^2-1)](https://latex.codecogs.com/gif.latex?V(r)=-D_{0}\left[1&plus;\frac{b}{r_{0}}\left(r-r_{0}\right)\right]\exp\left[-\frac{b}{r_{0}}\left(r-r_{0}\right)\right])
+![V(r)=d0((1-exp(-a*(r-r0)))^2-1)](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=-D_{0}\left[1&plus;\frac{b}{r_{0}}\left&#40;r-r_{0}\right&#41;\right]\exp\left[-\frac{b}{r_{0}}\left&#40;r-r_{0}\right&#41;\right])
 
 You may instantiate the Rydberg class as follows:
 
