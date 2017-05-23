@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="description" content="Approximation of computed data with empirical pair potentials">
-    <meta name="keywords" content="potential, approximation, morse, lennard-jones">
+    <meta name="keywords" content="potential, approximation, morse, lennard-jones, buckingham, rydberg">
     <title>potprox — Potential Approximation</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="icon" type="image/png" href="favicon.png"/>
@@ -72,12 +72,14 @@
                     <label for="potential">Select an approximating potential</label><br>
                     <select id="potential">
                         <option value="LennardJones">Lennard-Jones</option>
+                        <option value="Buckingham">exp-6 (mod. Buckingham)</option>
                         <option value="Morse" selected>Morse</option>
                         <option value="Rydberg">Rydberg</option>
                     </select>
                 </div>
                 <div class="ctrl">
                     <img src="img/lennard-jones.svg" alt="The Lennard-Jones potential" data-potential="LennardJones" class="hidden">
+                    <img src="img/buckingham.svg" alt="The exp-6 potential" data-potential="Buckingham" class="hidden">
                     <img src="img/morse.svg" alt="The Morse potential" data-potential="Morse">
                     <img src="img/rydberg.svg" alt="The Rydberg potential" data-potential="Rydberg" class="hidden">
                 </div>
@@ -90,6 +92,11 @@
             <samp class="result hidden" data-potential="LennardJones">
                 <var>ε</var>&nbsp;=&nbsp;<span data-param="epsilon">N/A</span>;
                 <var>σ</var>&nbsp;=&nbsp;<span data-param="sigma">N/A</span>
+            </samp>
+            <samp class="result hidden" data-potential="Buckingham">
+                <var>D<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="d0">N/A</span>;
+                <var>r<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="r0">N/A</span>;
+                <var>a</var>&nbsp;=&nbsp;<span data-param="a">N/A</span>
             </samp>
             <samp class="result" data-potential="Morse">
                 <var>D<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="d0">N/A</span>;
