@@ -100,7 +100,7 @@ The `LennardJones` class instance represents the Lennard-Jones potential with th
 You may instantiate the LennardJones class as follows:
 
 ```javascript
-let lj = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
+let lennardjones = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
 ```
 
 ### The `potprox.Buckingham` class
@@ -152,7 +152,7 @@ The *static* method `from` creates an instance of the specific class with potent
 Calculates the value of the potential for the given interatomic distance.
 
 ```javascript
-let lj = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
+let lennardjones = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
 console.log(lj.at(6.0)); // => -0.02399355483055115
 
 let buckingham = new potprox.Buckingham({d0: 0.0360, r0: 5.298, a: 4.332});
@@ -170,7 +170,7 @@ console.log(rydberg.at(6.0)); // => -0.030035419908893232
 Returns an object containing the potential parameters.
 
 ```javascript
-let lj = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
+let lennardjones = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
 console.log(lj.toJSON()); // => {epsilon: 0.041, sigma: 4.5}
 
 let buckingham = new potprox.Buckingham({d0: 0.0360, r0: 5.298, a: 4.332});
