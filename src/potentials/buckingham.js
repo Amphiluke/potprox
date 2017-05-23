@@ -1,7 +1,7 @@
 let instanceData = new WeakMap();
 
-class Morse {
-    constructor({d0 = 1, r0 = 1, a = 1} = {}) {
+class Buckingham {
+    constructor({d0 = 1, r0 = 1, a = 2} = {}) {
         instanceData.set(this, {});
         this.d0 = d0;
         this.r0 = r0;
@@ -9,10 +9,10 @@ class Morse {
     }
 
     /**
-     * Create an instance of the Morse potential via approximation of input data.
+     * Create an instance of the Buckingham potential via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
-     * @returns {Morse}
+     * @returns {Buckingham}
      * @static
      */
     static fastFrom(data) {
@@ -22,6 +22,7 @@ class Morse {
         if (data.length < 3) {
             throw new Error("Too little points. Approximation is impossible");
         }
+        data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
         let d0 = Number.POSITIVE_INFINITY;
         let r0 = 1;
         for (let {r, e} of data) {
@@ -31,35 +32,39 @@ class Morse {
             }
         }
         d0 = Math.abs(d0);
-        let a = 0;
-        let counter = 0;
-        for (let {r, e} of data) {
-            let eFactor = Math.sqrt(1 + e / d0);
-            let aTemp = Number.NaN;
-            if (r > r0) {
-                aTemp = Math.log(1 - eFactor) / (r0 - r);
-            } else if (r < r0) {
-                aTemp = Math.log(1 + eFactor) / (r0 - r);
-            }
-            if (Number.isFinite(aTemp)) {
-                a += aTemp;
-                counter++;
+        let pt1, pt2;
+        for (let i = 1; i < data.length; i++) {
+            pt1 = data[i - 1];
+            pt2 = data[i];
+            if (pt2.r >= r0 || pt1.e < 0 || pt2.e < 0) {
+                break;
             }
         }
-        a /= counter;
-        return new Morse({d0, r0, a});
+        let a;
+        if (pt1 && pt2 && pt1.r < r0 && pt2.r <= r0) {
+            let sigma = pt1.e * (pt1.r - pt2.r) / (pt2.e - pt1.e) + pt1.r;
+            if (sigma > 0) {
+                let A = 1 - sigma / r0;
+                let B = Math.pow(r0 / sigma, 6) / 6;
+                a = (B - A - Math.sqrt(B * B - 2 * A * B - A * A)) / (A * A);
+                if (!Number.isFinite(a)) {
+                    a = undefined;
+                }
+            }
+        }
+        return new Buckingham({d0, r0, a});
     }
 
     /**
-     * Create an instance of the Morse potential via approximation of input data.
+     * Create an instance of the Buckingham potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
-     * @returns {Morse}
+     * @returns {Buckingham}
      * @static
      */
     static from(data) {
-        let morse = this.fastFrom(data);
-        let {d0, r0, a} = morse; // initial approximation
+        let buckingham = this.fastFrom(data);
+        let {d0, r0, a} = buckingham; // initial approximation
 
         // Convergence limits
         const d0Lim = d0 / 1000;
@@ -72,11 +77,13 @@ class Morse {
         do {
             let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
             for (let {r, e} of data) {
-                let exp = Math.exp(a * (r0 - r));
-                let k = -d0 + d0 * (1 - exp) * (1 - exp);
+                let factor = a * Math.pow(r0 / r, 6);
+                let exp = Math.exp(a * (1 - r / r0));
+                let k = d0 / (a - 6) * (6 * exp - factor);
                 let l = k / d0;
-                let m = -2 * d0 * (1 - exp) * a * exp;
-                let n = 2 * d0 * (1 - exp) * (r - r0) * exp;
+                let m = d0 / (a - 6) * (6 * exp * a * r / (r0 * r0) - 6 * factor / r0);
+                let n = -d0 / ((a - 6) * (a - 6)) * (6 * exp - factor) +
+                    d0 / (a - 6) * (6 * (1 - r / r0) * exp - factor / a);
 
                 c1 += l * l;
                 c2 += m * l;
@@ -99,10 +106,10 @@ class Morse {
             a += da;
         } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(da) > aLim));
 
-        morse.d0 = d0;
-        morse.r0 = r0;
-        morse.a = a;
-        return morse;
+        buckingham.d0 = d0;
+        buckingham.r0 = r0;
+        buckingham.a = a;
+        return buckingham;
     }
 
     get d0() {
@@ -139,7 +146,7 @@ class Morse {
             throw new TypeError("The 'a' parameter should be a finite number");
         }
         if (value <= 0) {
-            throw new RangeError("The 'a' parameter should be greater than zero");
+            throw new RangeError("The 'a' parameter should be greater than 0");
         }
         instanceData.get(this).a = value;
     }
@@ -157,8 +164,7 @@ class Morse {
             throw new RangeError("Distance shouldn't be less than zero");
         }
         let {d0, r0, a} = this;
-        let factor = 1 - Math.exp(a * (r0 - r));
-        return d0 * factor * factor - d0;
+        return d0 / (a - 6) * (6 * Math.exp(a * (1 - r / r0)) - a * Math.pow(r0 / r, 6));
     }
 
     toJSON() {
@@ -166,4 +172,4 @@ class Morse {
     }
 }
 
-module.exports = Morse;
+module.exports = Buckingham;

@@ -1,6 +1,6 @@
 {
   "name": "potprox",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Approximation of computed data with empirical pair potentials",
   "main": "src/potprox.js",
   "scripts": {

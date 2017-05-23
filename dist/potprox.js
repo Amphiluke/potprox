@@ -1,6 +1,182 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.potprox = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 let instanceData = new WeakMap();
 
+class Buckingham {
+    constructor({d0 = 1, r0 = 1, a = 2} = {}) {
+        instanceData.set(this, {});
+        this.d0 = d0;
+        this.r0 = r0;
+        this.a = a;
+    }
+
+    /**
+     * Create an instance of the Buckingham potential via approximation of input data.
+     * This method performs fast initial approximation and is not very accurate.
+     * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @returns {Buckingham}
+     * @static
+     */
+    static fastFrom(data) {
+        if (!Array.isArray(data)) {
+            throw new TypeError("Approximated data should be an array of points");
+        }
+        if (data.length < 3) {
+            throw new Error("Too little points. Approximation is impossible");
+        }
+        data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
+        let d0 = Number.POSITIVE_INFINITY;
+        let r0 = 1;
+        for (let {r, e} of data) {
+            if (e < d0) {
+                d0 = e;
+                r0 = r;
+            }
+        }
+        d0 = Math.abs(d0);
+        let pt1, pt2;
+        for (let i = 1; i < data.length; i++) {
+            pt1 = data[i - 1];
+            pt2 = data[i];
+            if (pt2.r >= r0 || pt1.e < 0 || pt2.e < 0) {
+                break;
+            }
+        }
+        let a;
+        if (pt1 && pt2 && pt1.r < r0 && pt2.r <= r0) {
+            let sigma = pt1.e * (pt1.r - pt2.r) / (pt2.e - pt1.e) + pt1.r;
+            if (sigma > 0) {
+                let A = 1 - sigma / r0;
+                let B = Math.pow(r0 / sigma, 6) / 6;
+                a = (B - A - Math.sqrt(B * B - 2 * A * B - A * A)) / (A * A);
+                if (!Number.isFinite(a)) {
+                    a = undefined;
+                }
+            }
+        }
+        return new Buckingham({d0, r0, a});
+    }
+
+    /**
+     * Create an instance of the Buckingham potential via approximation of input data.
+     * This method gives more accurate approximation results than the `fastFrom` method.
+     * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @returns {Buckingham}
+     * @static
+     */
+    static from(data) {
+        let buckingham = this.fastFrom(data);
+        let {d0, r0, a} = buckingham; // initial approximation
+
+        // Convergence limits
+        const d0Lim = d0 / 1000;
+        const r0Lim = r0 / 1000;
+        const aLim = a / 1000;
+
+        // Deltas
+        let dd0, dr0, da;
+
+        do {
+            let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
+            for (let {r, e} of data) {
+                let factor = a * Math.pow(r0 / r, 6);
+                let exp = Math.exp(a * (1 - r / r0));
+                let k = d0 / (a - 6) * (6 * exp - factor);
+                let l = k / d0;
+                let m = d0 / (a - 6) * (6 * exp * a * r / (r0 * r0) - 6 * factor / r0);
+                let n = -d0 / ((a - 6) * (a - 6)) * (6 * exp - factor) +
+                    d0 / (a - 6) * (6 * (1 - r / r0) * exp - factor / a);
+
+                c1 += l * l;
+                c2 += m * l;
+                c3 += n * l;
+                c4 += (k - e) * l;
+                c5 += m * m;
+                c6 += n * m;
+                c7 += (k - e) * m;
+                c8 += n * n;
+                c9 += (k - e) * n;
+            }
+
+            da = -((c4 - c1 * c7 / c2) - (c4 - c1 * c9 / c3) * ((c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3))) /
+                ((c3 - c1 * c6 / c2) - (c3 - c1 * c8 / c3) * (c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3));
+            dr0 = ((c3 - c1 * c6 / c2) * da + (c4 - c1 * c7 / c2)) / (c1 * c5 / c2 - c2);
+            dd0 = (-c2 * dr0 - c3 * da - c4) / c1;
+
+            d0 += dd0;
+            r0 += dr0;
+            a += da;
+        } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(da) > aLim));
+
+        buckingham.d0 = d0;
+        buckingham.r0 = r0;
+        buckingham.a = a;
+        return buckingham;
+    }
+
+    get d0() {
+        return instanceData.get(this).d0;
+    }
+    set d0(value) {
+        if (!Number.isFinite(value)) {
+            throw new TypeError("The 'd0' parameter should be a finite number");
+        }
+        if (value <= 0) {
+            throw new RangeError("The 'd0' parameter should be greater than zero");
+        }
+        instanceData.get(this).d0 = value;
+    }
+
+    get r0() {
+        return instanceData.get(this).r0;
+    }
+    set r0(value) {
+        if (!Number.isFinite(value)) {
+            throw new TypeError("The 'r0' parameter should be a finite number");
+        }
+        if (value <= 0) {
+            throw new RangeError("The 'r0' parameter should be greater than zero");
+        }
+        instanceData.get(this).r0 = value;
+    }
+
+    get a() {
+        return instanceData.get(this).a;
+    }
+    set a(value) {
+        if (!Number.isFinite(value)) {
+            throw new TypeError("The 'a' parameter should be a finite number");
+        }
+        if (value <= 0) {
+            throw new RangeError("The 'a' parameter should be greater than 0");
+        }
+        instanceData.get(this).a = value;
+    }
+
+    /**
+     * Calculate energy for the given interatomic distance
+     * @param {Number} r
+     * @returns {Number}
+     */
+    at(r) {
+        if (typeof r !== "number") {
+            throw new TypeError("Distance should be a number");
+        }
+        if (r < 0) {
+            throw new RangeError("Distance shouldn't be less than zero");
+        }
+        let {d0, r0, a} = this;
+        return d0 / (a - 6) * (6 * Math.exp(a * (1 - r / r0)) - a * Math.pow(r0 / r, 6));
+    }
+
+    toJSON() {
+        return {d0: this.d0, r0: this.r0, a: this.a};
+    }
+}
+
+module.exports = Buckingham;
+},{}],2:[function(require,module,exports){
+let instanceData = new WeakMap();
+
 class LennardJones {
     constructor({epsilon = 1, sigma = 1} = {}) {
         instanceData.set(this, {});
@@ -84,7 +260,7 @@ class LennardJones {
 }
 
 module.exports = LennardJones;
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 let instanceData = new WeakMap();
 
 class Morse {
@@ -161,7 +337,7 @@ class Morse {
             for (let {r, e} of data) {
                 let exp = Math.exp(a * (r0 - r));
                 let k = -d0 + d0 * (1 - exp) * (1 - exp);
-                let l = (1 - exp) * (1 - exp) - 1;
+                let l = k / d0;
                 let m = -2 * d0 * (1 - exp) * a * exp;
                 let n = 2 * d0 * (1 - exp) * (r - r0) * exp;
 
@@ -254,7 +430,7 @@ class Morse {
 }
 
 module.exports = Morse;
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 let instanceData = new WeakMap();
 
 class Rydberg {
@@ -332,7 +508,7 @@ class Rydberg {
                 let factor = b * (r / r0 - 1);
                 let exp = Math.exp(-factor);
                 let k = -d0 * (1 + factor) * exp;
-                let l = (-1 - factor) * exp;
+                let l = k / d0;
                 let m = -d0 * b * r / (r0 * r0) * exp * factor;
                 let n = d0 * factor / b * exp * factor;
 
@@ -425,13 +601,14 @@ class Rydberg {
 }
 
 module.exports = Rydberg;
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 let potprox = {
     LennardJones: require("./potentials/lennard-jones.js"),
+    Buckingham: require("./potentials/buckingham.js"),
     Morse: require("./potentials/morse.js"),
     Rydberg: require("./potentials/rydberg.js")
 };
 
 module.exports = potprox;
-},{"./potentials/lennard-jones.js":1,"./potentials/morse.js":2,"./potentials/rydberg.js":3}]},{},[4])(4)
+},{"./potentials/buckingham.js":1,"./potentials/lennard-jones.js":2,"./potentials/morse.js":3,"./potentials/rydberg.js":4}]},{},[5])(5)
 });

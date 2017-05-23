@@ -75,7 +75,7 @@ class Rydberg {
                 let factor = b * (r / r0 - 1);
                 let exp = Math.exp(-factor);
                 let k = -d0 * (1 + factor) * exp;
-                let l = (-1 - factor) * exp;
+                let l = k / d0;
                 let m = -d0 * b * r / (r0 * r0) * exp * factor;
                 let n = d0 * factor / b * exp * factor;
 
