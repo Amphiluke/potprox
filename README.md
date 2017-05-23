@@ -107,7 +107,7 @@ let lj = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
 
 The `Buckingham` class instance represents the modified Buckingham potential (the exp-6 potential) with the given parameters `d0`, `r0`, and `a` (which are often referenced to as *ε*, *r<sub>m</sub>*, and *α* respectively).
 
-![V(r)=d0/(1-6/a)*(6/a*exp(a(1-r/r0))-(r0/r)^6)](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=\frac{D_0}{1-6/a}\left\{\frac{6}{a}\exp\left[a\left&#40;1-\frac{r}{r_0}\right&#41;\right]-\left&#40;\frac{r_0}{r}\right&#41;^{6}\right\})
+![V(r)=d0/(1-6/a)*(6/a*exp(a(1-r/r0))-(r0/r)^6)](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=\frac{D_0}{1-6/a}\left&#40;\frac{6}{a}\exp\left[a\left&#40;1-\frac{r}{r_0}\right&#41;\right]-\left&#40;\frac{r_0}{r}\right&#41;^{6}\right&#41;)
 
 You may instantiate the exp-6 class as follows:
 
@@ -154,6 +154,9 @@ Calculates the value of the potential for the given interatomic distance.
 ```javascript
 let lj = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
 console.log(lj.at(6.0)); // => -0.02399355483055115
+
+let buckingham = new potprox.Buckingham({d0: 0.0360, r0: 5.298, a: 4.332});
+console.log(buckingham.at(6.0)); // => -0.028625141782941267
 
 let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
 console.log(morse.at(6.0)); // => -0.029435553046279185
