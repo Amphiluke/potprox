@@ -153,7 +153,7 @@ Calculates the value of the potential for the given interatomic distance.
 
 ```javascript
 let lennardjones = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
-console.log(lj.at(6.0)); // => -0.02399355483055115
+console.log(lennardjones.at(6.0)); // => -0.02399355483055115
 
 let buckingham = new potprox.Buckingham({d0: 0.0360, r0: 5.298, a: 4.332});
 console.log(buckingham.at(6.0)); // => -0.028625141782941267
@@ -171,7 +171,7 @@ Returns an object containing the potential parameters.
 
 ```javascript
 let lennardjones = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
-console.log(lj.toJSON()); // => {epsilon: 0.041, sigma: 4.5}
+console.log(lennardjones.toJSON()); // => {epsilon: 0.041, sigma: 4.5}
 
 let buckingham = new potprox.Buckingham({d0: 0.0360, r0: 5.298, a: 4.332});
 console.log(buckingham.toJSON()); // => {d0: 0.036, r0: 5.298, a: 4.332}
