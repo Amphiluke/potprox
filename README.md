@@ -79,7 +79,7 @@ console.log("Morse potential info:", morse.toJSON());
 let rydberg = potprox.Rydberg.from(data);
 console.log("Rydberg potential info:", rydberg.toJSON());
 
-// Approximate with the Rydberg potential
+// Approximate with the Varshni potential (III)
 let varshni = potprox.Varshni3.from(data);
 console.log("Varshni potential (III) info:", varshni.toJSON());
 ```
@@ -210,7 +210,7 @@ Note that the potential parameters are also available as direct instance propert
 
 The overridden method `toJSON()` allows the instances of the potprox potential classes to be easily serialized to a JSON string, and restored from the JSON string later on.
 
-```
+```javascript
 let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
 // Serialize
 let json = JSON.stringify(morse);
