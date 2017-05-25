@@ -211,10 +211,11 @@ Note that the potential parameters are also available as direct instance propert
 The overridden method `toJSON()` allows the instances of the potprox potential classes to be easily serialized to a JSON string, and restored from the JSON string later on.
 
 ```javascript
+// Create and serialize
 let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
-// Serialize
 let json = JSON.stringify(morse);
-// Unserialize
+
+// Unserialize and restore
 let potentialData = JSON.parse(json);
 let morseCopy = new potprox[potentialData.type](potentialData);
 ```
