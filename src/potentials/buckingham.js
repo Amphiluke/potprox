@@ -168,7 +168,7 @@ class Buckingham {
     }
 
     toJSON() {
-        return {d0: this.d0, r0: this.r0, a: this.a};
+        return {type: "Buckingham", d0: this.d0, r0: this.r0, a: this.a};
     }
 }
 

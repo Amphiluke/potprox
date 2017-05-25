@@ -1,6 +1,6 @@
 {
   "name": "potprox",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Approximation of computed data with empirical pair potentials",
   "main": "src/potprox.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "approximation",
     "morse",
     "lennard-jones",
+    "buckingham",
     "rydberg"
   ],
   "author": "Amphiluke",

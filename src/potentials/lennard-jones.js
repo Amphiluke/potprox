@@ -78,7 +78,7 @@ class LennardJones {
     }
 
     toJSON() {
-        return {epsilon: this.epsilon, sigma: this.sigma};
+        return {type: "LennardJones", epsilon: this.epsilon, sigma: this.sigma};
     }
 }
 

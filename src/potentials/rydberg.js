@@ -163,7 +163,7 @@ class Rydberg {
     }
 
     toJSON() {
-        return {d0: this.d0, r0: this.r0, b: this.b};
+        return {type: "Rydberg", d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 

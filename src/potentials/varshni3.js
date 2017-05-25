@@ -1,18 +1,18 @@
 let instanceData = new WeakMap();
 
-class Morse {
-    constructor({d0 = 1, r0 = 1, a = 1} = {}) {
+class Varshni3 {
+    constructor({d0 = 1, r0 = 1, b = 1} = {}) {
         instanceData.set(this, {});
         this.d0 = d0;
         this.r0 = r0;
-        this.a = a;
+        this.b = b;
     }
 
     /**
-     * Create an instance of the Morse potential via approximation of input data.
+     * Create an instance of the Varshni potential (III) via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
-     * @returns {Morse}
+     * @returns {Varshni3}
      * @static
      */
     static fastFrom(data) {
@@ -31,52 +31,52 @@ class Morse {
             }
         }
         d0 = Math.abs(d0);
-        let a = 0;
+        let b = 0;
         let counter = 0;
         for (let {r, e} of data) {
             let eFactor = Math.sqrt(1 + e / d0);
-            let aTemp = Number.NaN;
+            let bTemp = Number.NaN;
             if (r > r0) {
-                aTemp = Math.log(1 - eFactor) / (r0 - r);
+                bTemp = Math.log(r / r0 * (1 - eFactor)) / (r0 * r0 - r * r);
             } else if (r < r0) {
-                aTemp = Math.log(1 + eFactor) / (r0 - r);
+                bTemp = Math.log(r / r0 * (1 + eFactor)) / (r0 * r0 - r * r);
             }
-            if (Number.isFinite(aTemp)) {
-                a += aTemp;
+            if (Number.isFinite(bTemp)) {
+                b += bTemp;
                 counter++;
             }
         }
-        a /= counter;
-        return new Morse({d0, r0, a});
+        b /= counter;
+        return new Varshni3({d0, r0, b});
     }
 
     /**
-     * Create an instance of the Morse potential via approximation of input data.
+     * Create an instance of the Varshni potential (III) via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
-     * @returns {Morse}
+     * @returns {Varshni3}
      * @static
      */
     static from(data) {
-        let morse = this.fastFrom(data);
-        let {d0, r0, a} = morse; // initial approximation
+        let varshni = this.fastFrom(data);
+        let {d0, r0, b} = varshni; // initial approximation
 
         // Convergence limits
         const d0Lim = d0 / 1000;
         const r0Lim = r0 / 1000;
-        const aLim = a / 1000;
+        const bLim = b / 1000;
 
         // Deltas
-        let dd0, dr0, da;
+        let dd0, dr0, db;
 
         do {
             let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
             for (let {r, e} of data) {
-                let exp = Math.exp(a * (r0 - r));
+                let exp = r0 / r * Math.exp(b * (r0 * r0 - r * r));
                 let k = -d0 + d0 * (1 - exp) * (1 - exp);
                 let l = k / d0;
-                let m = -2 * d0 * (1 - exp) * a * exp;
-                let n = 2 * d0 * (1 - exp) * (r - r0) * exp;
+                let m = 2 * d0 * (1 - exp) * (-exp / r0 - exp * 2 * b * r0);
+                let n = 2 * d0 * (1 - exp) * exp * (r * r - r0 * r0);
 
                 c1 += l * l;
                 c2 += m * l;
@@ -89,20 +89,20 @@ class Morse {
                 c9 += (k - e) * n;
             }
 
-            da = -((c4 - c1 * c7 / c2) - (c4 - c1 * c9 / c3) * ((c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3))) /
+            db = -((c4 - c1 * c7 / c2) - (c4 - c1 * c9 / c3) * ((c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3))) /
                 ((c3 - c1 * c6 / c2) - (c3 - c1 * c8 / c3) * (c2 - c1 * c5 / c2) / (c2 - c1 * c6 / c3));
-            dr0 = ((c3 - c1 * c6 / c2) * da + (c4 - c1 * c7 / c2)) / (c1 * c5 / c2 - c2);
-            dd0 = (-c2 * dr0 - c3 * da - c4) / c1;
+            dr0 = ((c3 - c1 * c6 / c2) * db + (c4 - c1 * c7 / c2)) / (c1 * c5 / c2 - c2);
+            dd0 = (-c2 * dr0 - c3 * db - c4) / c1;
 
             d0 += dd0;
             r0 += dr0;
-            a += da;
-        } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(da) > aLim));
+            b += db;
+        } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(db) > bLim));
 
-        morse.d0 = d0;
-        morse.r0 = r0;
-        morse.a = a;
-        return morse;
+        varshni.d0 = d0;
+        varshni.r0 = r0;
+        varshni.b = b;
+        return varshni;
     }
 
     get d0() {
@@ -131,17 +131,17 @@ class Morse {
         instanceData.get(this).r0 = value;
     }
 
-    get a() {
-        return instanceData.get(this).a;
+    get b() {
+        return instanceData.get(this).b;
     }
-    set a(value) {
+    set b(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'a' parameter should be a finite number");
+            throw new TypeError("The 'b' parameter should be a finite number");
         }
         if (value <= 0) {
-            throw new RangeError("The 'a' parameter should be greater than zero");
+            throw new RangeError("The 'b' parameter should be greater than zero");
         }
-        instanceData.get(this).a = value;
+        instanceData.get(this).b = value;
     }
 
     /**
@@ -156,14 +156,14 @@ class Morse {
         if (r < 0) {
             throw new RangeError("Distance shouldn't be less than zero");
         }
-        let {d0, r0, a} = this;
-        let factor = 1 - Math.exp(a * (r0 - r));
+        let {d0, r0, b} = this;
+        let factor = 1 - r0 / r * Math.exp(b * (r0 * r0 - r * r));
         return d0 * factor * factor - d0;
     }
 
     toJSON() {
-        return {type: "Morse", d0: this.d0, r0: this.r0, a: this.a};
+        return {type: "Varshni3", d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 
-module.exports = Morse;
+module.exports = Varshni3;
