@@ -110,7 +110,7 @@ let lennardjones = new potprox.LennardJones({epsilon: 0.041, sigma: 4.5});
 
 An instance of the `Buckingham` class represents the modified Buckingham potential (the exp-6 potential) with the given parameters `d0`, `r0`, and `a` (which are often referenced to as *ε*, *r<sub>m</sub>*, and *α* respectively).
 
-![V(r)=d0/(1-6/a)*(6/a*exp(a(1-r/r0))-(r0/r)^6)](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=\frac{D_0}{1-6/a}\left&#40;\frac{6}{a}\exp\left[a\left&#40;1-\frac{r}{r_0}\right&#41;\right]-\left&#40;\frac{r_0}{r}\right&#41;^{6}\right&#41;)
+![V(r)=d0/(1-6/a)*(6/a*exp(a(1-r/r0))-(r0/r)^6)](https://latex.codecogs.com/svg.latex?V&#40;r&#41;=\frac{D_0}{1-6/a}\left&#40;\frac{6}{a}\exp\left[a\left&#40;1-\frac{r}{r_0}\right&#41;\right]-\left&#40;\frac{r_0}{r}\right&#41;^{6}\right&#41;)
 
 You may instantiate the `Buckingham` class as follows:
 
@@ -122,7 +122,7 @@ let buckingham = new potprox.Buckingham({d0: 0.0360, r0: 5.298, a: 4.332});
 
 An instance of the `Morse` class represents the Morse potential with the given parameters `d0`, `r0`, and `a` (which are often referenced to as *D<sub>e</sub>*, *r<sub>e</sub>*, and *α* respectively).
 
-![V(r)=-d0+d0(1-exp(-a*(r-r0)))^2](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=-D_{0}&plus;D_{0}\left[1-\exp\left&#40;-a\left&#40;r-r_{0}\right&#41;\right&#41;\right]^{2})
+![V(r)=-d0+d0(1-exp(-a*(r-r0)))^2](https://latex.codecogs.com/svg.latex?V&#40;r&#41;=-D_{0}&plus;D_{0}\left[1-\exp\left&#40;-a\left&#40;r-r_{0}\right&#41;\right&#41;\right]^{2})
 
 You may instantiate the `Morse` class as follows:
 
@@ -134,7 +134,7 @@ let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
 
 An instance of the `Rydberg` class represents the Rydberg potential with the given parameters `d0`, `r0`, and `b`.
 
-![V(r)=-d0(1+b(r-r0)/r0)*exp(-b(r-r0)/r0)](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=-D_{0}\left[1&plus;\frac{b}{r_{0}}\left&#40;r-r_{0}\right&#41;\right]\exp\left[-\frac{b}{r_{0}}\left&#40;r-r_{0}\right&#41;\right])
+![V(r)=-d0(1+b(r-r0)/r0)*exp(-b(r-r0)/r0)](https://latex.codecogs.com/svg.latex?V&#40;r&#41;=-D_{0}\left[1&plus;\frac{b}{r_{0}}\left&#40;r-r_{0}\right&#41;\right]\exp\left[-\frac{b}{r_{0}}\left&#40;r-r_{0}\right&#41;\right])
 
 You may instantiate the `Rydberg` class as follows:
 
@@ -146,7 +146,7 @@ let rydberg = new potprox.Rydberg({d0: 0.0368, r0: 5.350, b: 6.415});
 
 An instance of the `Varshni3` class represents the Varshni potential (III) with the given parameters `d0`, `r0`, and `b`.
 
-![V(r)=-d0+d0(1-r0/r*exp(-b(r^2-r0^2)))^2](https://latex.codecogs.com/gif.latex?V&#40;r&#41;=-D_0&plus;D_0\left[1-\frac{r_0}{r}\exp\left&#40;-b\left&#40;r^2-r_0^2\right&#41;\right&#41;\right]^2)
+![V(r)=-d0+d0(1-r0/r*exp(-b(r^2-r0^2)))^2](https://latex.codecogs.com/svg.latex?V&#40;r&#41;=-D_0&plus;D_0\left[1-\frac{r_0}{r}\exp\left&#40;-b\left&#40;r^2-r_0^2\right&#41;\right&#41;\right]^2)
 
 You may instantiate the `Varshni3` class as follows:
 
