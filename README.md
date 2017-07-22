@@ -223,7 +223,7 @@ Some additional/helper/extra functionality implemented in the potprox module is 
 
 #### `potprox.utils.rSqr(data, potential)`
 
-Use the method `potprox.utils.rSqr()` to calculate the [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) _R²_, a measure of goodness of fit. The method takes two arguments: the initial data array (same as that passed to the [`from` method](#fromdatasettings)), and the approximating potential instance.
+Use the method `potprox.utils.rSqr()` to calculate the [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) _R²_, a measure of goodness of fit. The method takes two arguments: the initial data array (same as that passed to the [`from` method](#fromdata--settings)), and the approximating potential instance.
 
 ```javascript
 let morse = potprox.Morse.from(data);
