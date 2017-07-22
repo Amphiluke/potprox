@@ -26,6 +26,7 @@
         approximate(data, potentialType) {
             let potproxData = this.toPotprox(data);
             let potential = potprox[potentialType].from(potproxData);
+            potential.rSqr = potprox.utils.rSqr(potproxData, potential);
             let rList = potproxData.map(({r}) => r);
             let rMax = Math.max(...rList);
             let rMin = Math.min(...rList);
