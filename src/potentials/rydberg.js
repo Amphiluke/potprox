@@ -54,17 +54,21 @@ class Rydberg {
      * Create an instance of the Rydberg potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @param {Object} [settings] - Approximation settings
+     * @param {Number} [settings.d0Conv=0.001] - `d0` convergence factor
+     * @param {Number} [settings.r0Conv=0.001] - `r0` convergence factor
+     * @param {Number} [settings.bConv=0.001] - `b` convergence factor
      * @returns {Rydberg}
      * @static
      */
-    static from(data) {
+    static from(data, {d0Conv = 0.001, r0Conv = 0.001, bConv = 0.001} = {}) {
         let rydberg = this.fastFrom(data);
         let {d0, r0, b} = rydberg; // initial approximation
 
         // Convergence limits
-        const d0Lim = d0 / 1000;
-        const r0Lim = r0 / 1000;
-        const bLim = b / 1000;
+        const d0Lim = d0 * d0Conv;
+        const r0Lim = r0 * r0Conv;
+        const bLim = b * bConv;
 
         // Deltas
         let dd0, dr0, db;

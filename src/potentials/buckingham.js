@@ -59,17 +59,21 @@ class Buckingham {
      * Create an instance of the Buckingham potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @param {Object} [settings] - Approximation settings
+     * @param {Number} [settings.d0Conv=0.001] - `d0` convergence factor
+     * @param {Number} [settings.r0Conv=0.001] - `r0` convergence factor
+     * @param {Number} [settings.aConv=0.001] - `a` convergence factor
      * @returns {Buckingham}
      * @static
      */
-    static from(data) {
+    static from(data, {d0Conv = 0.001, r0Conv = 0.001, aConv = 0.001} = {}) {
         let buckingham = this.fastFrom(data);
         let {d0, r0, a} = buckingham; // initial approximation
 
         // Convergence limits
-        const d0Lim = d0 / 1000;
-        const r0Lim = r0 / 1000;
-        const aLim = a / 1000;
+        const d0Lim = d0 * d0Conv;
+        const r0Lim = r0 * r0Conv;
+        const aLim = a * aConv;
 
         // Deltas
         let dd0, dr0, da;

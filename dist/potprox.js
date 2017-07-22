@@ -60,17 +60,21 @@ class Buckingham {
      * Create an instance of the Buckingham potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @param {Object} [settings] - Approximation settings
+     * @param {Number} [settings.d0Conv=0.001] - `d0` convergence factor
+     * @param {Number} [settings.r0Conv=0.001] - `r0` convergence factor
+     * @param {Number} [settings.aConv=0.001] - `a` convergence factor
      * @returns {Buckingham}
      * @static
      */
-    static from(data) {
+    static from(data, {d0Conv = 0.001, r0Conv = 0.001, aConv = 0.001} = {}) {
         let buckingham = this.fastFrom(data);
         let {d0, r0, a} = buckingham; // initial approximation
 
         // Convergence limits
-        const d0Lim = d0 / 1000;
-        const r0Lim = r0 / 1000;
-        const aLim = a / 1000;
+        const d0Lim = d0 * d0Conv;
+        const r0Lim = r0 * r0Conv;
+        const aLim = a * aConv;
 
         // Deltas
         let dd0, dr0, da;
@@ -317,17 +321,21 @@ class Morse {
      * Create an instance of the Morse potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @param {Object} [settings] - Approximation settings
+     * @param {Number} [settings.d0Conv=0.001] - `d0` convergence factor
+     * @param {Number} [settings.r0Conv=0.001] - `r0` convergence factor
+     * @param {Number} [settings.aConv=0.001] - `a` convergence factor
      * @returns {Morse}
      * @static
      */
-    static from(data) {
+    static from(data, {d0Conv = 0.001, r0Conv = 0.001, aConv = 0.001} = {}) {
         let morse = this.fastFrom(data);
         let {d0, r0, a} = morse; // initial approximation
 
         // Convergence limits
-        const d0Lim = d0 / 1000;
-        const r0Lim = r0 / 1000;
-        const aLim = a / 1000;
+        const d0Lim = d0 * d0Conv;
+        const r0Lim = r0 * r0Conv;
+        const aLim = a * aConv;
 
         // Deltas
         let dd0, dr0, da;
@@ -487,17 +495,21 @@ class Rydberg {
      * Create an instance of the Rydberg potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @param {Object} [settings] - Approximation settings
+     * @param {Number} [settings.d0Conv=0.001] - `d0` convergence factor
+     * @param {Number} [settings.r0Conv=0.001] - `r0` convergence factor
+     * @param {Number} [settings.bConv=0.001] - `b` convergence factor
      * @returns {Rydberg}
      * @static
      */
-    static from(data) {
+    static from(data, {d0Conv = 0.001, r0Conv = 0.001, bConv = 0.001} = {}) {
         let rydberg = this.fastFrom(data);
         let {d0, r0, b} = rydberg; // initial approximation
 
         // Convergence limits
-        const d0Lim = d0 / 1000;
-        const r0Lim = r0 / 1000;
-        const bLim = b / 1000;
+        const d0Lim = d0 * d0Conv;
+        const r0Lim = r0 * r0Conv;
+        const bLim = b * bConv;
 
         // Deltas
         let dd0, dr0, db;
@@ -658,17 +670,21 @@ class Varshni3 {
      * Create an instance of the Varshni potential (III) via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
+     * @param {Object} [settings] - Approximation settings
+     * @param {Number} [settings.d0Conv=0.001] - `d0` convergence factor
+     * @param {Number} [settings.r0Conv=0.001] - `r0` convergence factor
+     * @param {Number} [settings.bConv=0.001] - `b` convergence factor
      * @returns {Varshni3}
      * @static
      */
-    static from(data) {
+    static from(data, {d0Conv = 0.001, r0Conv = 0.001, bConv = 0.001} = {}) {
         let varshni = this.fastFrom(data);
         let {d0, r0, b} = varshni; // initial approximation
 
         // Convergence limits
-        const d0Lim = d0 / 1000;
-        const r0Lim = r0 / 1000;
-        const bLim = b / 1000;
+        const d0Lim = d0 * d0Conv;
+        const r0Lim = r0 * r0Conv;
+        const bLim = b * bConv;
 
         // Deltas
         let dd0, dr0, db;
@@ -780,6 +796,40 @@ let potprox = {
     Varshni3: require("./potentials/varshni3.js")
 };
 
+// Other properties of the potprox object are non-enumerable to avoid mixing them with
+// potential classes when using such methods as Object.keys, Object.values etc.
+
+Object.defineProperty(potprox, "utils", {
+    configurable: true,
+    value: require("./utils.js")
+});
+
 module.exports = potprox;
-},{"./potentials/buckingham.js":1,"./potentials/lennard-jones.js":2,"./potentials/morse.js":3,"./potentials/rydberg.js":4,"./potentials/varshni3.js":5}]},{},[6])(6)
+},{"./potentials/buckingham.js":1,"./potentials/lennard-jones.js":2,"./potentials/morse.js":3,"./potentials/rydberg.js":4,"./potentials/varshni3.js":5,"./utils.js":7}],7:[function(require,module,exports){
+module.exports = {
+    /**
+     * Calculate the coefficient of determination to measure the goodness of fit
+     * @param {Array.<{r: Number, e: Number}>} data - Experimental/ab initio data
+     * @param {Object} potential - Approximating potential
+     * @returns {Number}
+     * @see https://en.wikipedia.org/wiki/Coefficient_of_determination
+     */
+    rSqr(data, potential) {
+        let avg = 0; // the mean of the experimental/ab initio data
+        let ssRes = 0; // the residual sum of squares (RSS)
+        for (let {r, e} of data) {
+            avg += e;
+            let residual = e - potential.at(r);
+            ssRes += residual * residual;
+        }
+        avg /= data.length;
+        let ssTot = 0; // the total sum of squares
+        for (let {e} of data) {
+            let diff = e - avg;
+            ssTot += diff * diff;
+        }
+        return 1 - ssRes / ssTot;
+    }
+};
+},{}]},{},[6])(6)
 });

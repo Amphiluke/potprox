@@ -158,9 +158,20 @@ let varshni = new potprox.Varshni3({d0: 0.0368, r0: 5.389, b: 0.0597});
 
 All the classes in the `potprox` object have a few common methods listed below.
 
-#### `from(data)`
+#### `from(data [, settings])`
 
-The *static* method `from` creates an instance of the specific class with potential parameters obtained via the least squares approximation procedure. The method expects a single argument, an array of objects `{r: Number, e: Number}`, where `r` is an interatomic distance, and `e` is the corresponding binding energy. Refer the [Usage](#usage) section for an example.
+The *static* method `from` creates an instance of the specific class with potential parameters obtained via the least squares approximation procedure.
+
+The first (required) argument is input approximated data, an array of objects `{r: Number, e: Number}`, where `r` is an interatomic distance, and `e` is the corresponding binding energy. Refer the [Usage](#usage) section for an example.
+
+The second (optional) argument can be specified to override approximation settings. Thus in order to get better approximation results you may decrease convergence limits by specifying custom convergence factors for all or some potential parameters.
+
+```javascript
+let morse = potprox.Morse.from(data, {d0Conv: 0.0001, r0Conv: 0.0001, aConv: 0.0001});
+let rydberg = potprox.Rydberg.from(data, {b0Conv: 0.0001});
+```
+
+Be careful though when using too small convergence factors as this may end up with performance issues. Consider using web workers if you need high-accuracy approximation but things appear to get slow.
 
 #### `at(r)`
 
@@ -205,6 +216,20 @@ console.log(varshni.toJSON()); // => {type: "Varshni3", d0: 0.0368, r0: 5.389, b
 ```
 
 Note that the potential parameters are also available as direct instance properties, and you may change them at any time.
+
+### Extras
+
+Some additional/helper/extra functionality implemented in the potprox module is available through the `potprox.utils` object. Currently, this functionality includes the following:
+
+#### `potprox.utils.rSqr(data, potential)`
+
+Use the method `potprox.utils.rSqr()` to calculate the [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) _R²_, a measure of goodness of fit. The method takes two arguments: the initial data array (same as that passed to the [`from` method](#fromdatasettings)), and the approximating potential instance.
+
+```javascript
+let morse = potprox.Morse.from(data);
+let rSqr = potprox.utils.rSqr(data, morse);
+console.log(`Coefficient of determination = ${rSqr}`);
+```
 
 ## Tips
 
