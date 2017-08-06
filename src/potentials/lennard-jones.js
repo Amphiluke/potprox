@@ -61,6 +61,13 @@ class LennardJones {
         instanceData.get(this).sigma = value;
     }
 
+    get r0() {
+        return 1.122462048309373 * this.sigma;
+    }
+    set r0(value) {
+        this.sigma = value / 1.122462048309373;
+    }
+
     /**
      * Calculate the energy for the given interatomic distance
      * @param {Number} r
