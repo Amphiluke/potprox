@@ -65,15 +65,16 @@
             let potproxData = this.toPotprox(data);
             let potential = potprox[potentialType].from(potproxData);
             potential.rSqr = potprox.utils.rSqr(potproxData, potential);
-            let rList = potproxData.map(({r}) => r);
-            let rMax = Math.max(...rList);
-            let rMin = Math.min(...rList);
-            let approxData = [];
+            return potential;
+        },
+
+        makeCurveData(potential, rMin, rMax) {
+            let curveData = [];
             for (let r = rMin, step = (rMax - rMin) / 50; r < rMax; r += step) {
-                approxData.push({x: r, y: potential.at(r)});
+                curveData.push({x: r, y: potential.at(r)});
             }
-            approxData.push({x: rMax, y: potential.at(rMax)});
-            return {potential, data: approxData};
+            curveData.push({x: rMax, y: potential.at(rMax)});
+            return curveData;
         }
     };
 
@@ -151,23 +152,27 @@
             this.updateChart();
         },
 
-        updateChart() {
+        updateChart(potential) {
             let ui = this.ui;
             let userData = dataCtrl.parseCSV(ui.get("#data").value);
             let potentialType = ui.get("#potential").value;
-            let {potential, data} = dataCtrl.approximate(userData, potentialType);
-            this.updateParamSlots(potentialType, potential);
+            this.potential = potential || dataCtrl.approximate(userData, potentialType);
+            let rList = userData.map(({x}) => x);
+            let curveData = dataCtrl.makeCurveData(this.potential, Math.min(...rList), Math.max(...rList));
+            this.updateParamSlots();
             if (chartCtrl.chart) {
-                chartCtrl.update(userData, data);
+                chartCtrl.update(userData, curveData);
             } else {
-                chartCtrl.createChart(ui.get("#graph").getContext("2d"), userData, data);
+                chartCtrl.createChart(ui.get("#graph").getContext("2d"), userData, curveData);
             }
         },
 
-        updateParamSlots(potentialType, data = {}) {
-            let selector = potentialType ? `[data-potential="${potentialType}"]` : "[data-potential]";
-            let paramSlots = this.ui.get("#ctrl-form").querySelectorAll(`.result${selector} [data-param]`);
-            [...paramSlots].forEach(slot => slot.textContent = data[slot.getAttribute("data-param")] || "N/A");
+        updateParamSlots() {
+            let potential = this.potential;
+            let data = potential ? Object.assign({rSqr: potential.rSqr}, potential.toJSON()) : {};
+            let selector = data.type ? `[data-potential="${data.type}"]` : "[data-potential]";
+            let paramSlots = this.ui.get("#ctrl-form").querySelectorAll(`.result${selector} input[name]`);
+            [...paramSlots].forEach(slot => slot.value = data[slot.name] || "");
         },
 
         addEventListener(elRef, event, method) {
@@ -181,9 +186,10 @@
             this.addEventListener("#file-csv", "change", "fileCSVChangeHandler");
             this.addEventListener(this.ui.get("#file-tab-ctrl").querySelector(".tab-sheet[data-format='winbond']"),
                 "change", "fileWinbondChangeHandler");
-            this.addEventListener("#data", "change", () => this.updateParamSlots());
+            this.addEventListener("#data", "change", "dataChangeHandler");
             this.addEventListener("#potential", "change", "potentialChangeHandler");
             this.addEventListener("#ctrl-form", "submit", "submitHandler");
+            this.addEventListener("#result-group", "change", "paramChangeHandler");
         },
 
         clickTabCtrlHandler({target}) {
@@ -205,6 +211,7 @@
             utils.readFile(file)
                 .then(csv => this.ui.get("#data").value = csv)
                 .catch(error => console.error(error));
+            this.potential = null;
             this.updateParamSlots();
         },
 
@@ -219,6 +226,12 @@
             Promise.all([utils.readFile(kulFile), utils.readFile(sum1File), utils.readFile(sum2File)])
                 .then(([kul, sum1, sum2]) => this.ui.get("#data").value = dataCtrl.winbondToCSV(kul, sum1, sum2))
                 .catch(error => console.error(error));
+            this.potential = null;
+            this.updateParamSlots();
+        },
+
+        dataChangeHandler() {
+            this.potential = null;
             this.updateParamSlots();
         },
 
@@ -226,11 +239,29 @@
             let type = target.value;
             let dependents = this.ui.get("#ctrl-form").querySelectorAll("[data-potential]");
             [...dependents].forEach(el => el.classList.toggle("hidden", el.getAttribute("data-potential") !== type));
+            this.potential = null;
+            this.updateParamSlots();
         },
 
         submitHandler(e) {
             e.preventDefault();
             this.updateChart();
+            this.ui.get("#result-group").classList.remove("user-modified");
+        },
+
+        paramChangeHandler({target}) {
+            if (!this.potential) {
+                return;
+            }
+            let fieldSet = this.ui.get("#result-group");
+            fieldSet.classList.add("user-modified");
+            let value = Number(target.value);
+            if (!value) {
+                return;
+            }
+            this.potential[target.name] = value;
+            this.potential.rSqr = undefined;
+            this.updateChart(this.potential);
         }
     };
 

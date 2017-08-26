@@ -99,38 +99,38 @@
             </div>
         </fieldset>
 
-        <fieldset class="result-group">
-            <legend>&#x2462; Results</legend>
+        <fieldset class="result-group" id="result-group">
+            <legend>&#x2462; Results<span title="Parameters was modified manually">✋</span></legend>
             <button type="submit">Recalculate</button>
-            <samp class="result hidden" data-potential="LennardJones">
-                <var>ε</var>&nbsp;=&nbsp;<span data-param="epsilon">N/A</span>;
-                <var>σ</var>&nbsp;=&nbsp;<span data-param="sigma">N/A</span><br>
-                <var>R</var>²&nbsp;=&nbsp;<span data-param="rSqr">N/A</span>
-            </samp>
-            <samp class="result hidden" data-potential="Buckingham">
-                <var>D<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="d0">N/A</span>;
-                <var>r<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="r0">N/A</span>;
-                <var>a</var>&nbsp;=&nbsp;<span data-param="a">N/A</span><br>
-                <var>R</var>²&nbsp;=&nbsp;<span data-param="rSqr">N/A</span>
-            </samp>
-            <samp class="result" data-potential="Morse">
-                <var>D<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="d0">N/A</span>;
-                <var>r<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="r0">N/A</span>;
-                <var>a</var>&nbsp;=&nbsp;<span data-param="a">N/A</span><br>
-                <var>R</var>²&nbsp;=&nbsp;<span data-param="rSqr">N/A</span>
-            </samp>
-            <samp class="result hidden" data-potential="Rydberg">
-                <var>D<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="d0">N/A</span>;
-                <var>r<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="r0">N/A</span>;
-                <var>b</var>&nbsp;=&nbsp;<span data-param="b">N/A</span><br>
-                <var>R</var>²&nbsp;=&nbsp;<span data-param="rSqr">N/A</span>
-            </samp>
-            <samp class="result hidden" data-potential="Varshni3">
-                <var>D<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="d0">N/A</span>;
-                <var>r<sub>0</sub></var>&nbsp;=&nbsp;<span data-param="r0">N/A</span>;
-                <var>b</var>&nbsp;=&nbsp;<span data-param="b">N/A</span><br>
-                <var>R</var>²&nbsp;=&nbsp;<span data-param="rSqr">N/A</span>
-            </samp>
+            <div class="result hidden" data-potential="LennardJones">
+                <label><var>ε</var><input type="text" name="epsilon" placeholder="N/A"></label>
+                <label><var>σ</var><input type="text" name="sigma" placeholder="N/A"></label>
+                <label><var>R²</var><input type="text" name="rSqr" placeholder="N/A" readonly></label>
+            </div>
+            <div class="result hidden" data-potential="Buckingham">
+                <label><var>D₀</var><input type="text" name="d0" placeholder="N/A"></label>
+                <label><var>r₀</var><input type="text" name="r0" placeholder="N/A"></label>
+                <label><var>a</var><input type="text" name="a" placeholder="N/A"></label>
+                <label><var>R²</var><input type="text" name="rSqr" placeholder="N/A" readonly></label>
+            </div>
+            <div class="result" data-potential="Morse">
+                <label><var>D₀</var><input type="text" name="d0" placeholder="N/A"></label>
+                <label><var>r₀</var><input type="text" name="r0" placeholder="N/A"></label>
+                <label><var>a</var><input type="text" name="a" placeholder="N/A"></label>
+                <label><var>R²</var><input type="text" name="rSqr" placeholder="N/A" readonly></label>
+             </div>
+            <div class="result hidden" data-potential="Rydberg">
+                <label><var>D₀</var><input type="text" name="d0" placeholder="N/A"></label>
+                <label><var>r₀</var><input type="text" name="r0" placeholder="N/A"></label>
+                <label><var>b</var><input type="text" name="b" placeholder="N/A"></label>
+                <label><var>R²</var><input type="text" name="rSqr" placeholder="N/A" readonly></label>
+            </div>
+            <div class="result hidden" data-potential="Varshni3">
+                <label><var>D₀</var><input type="text" name="d0" placeholder="N/A"></label>
+                <label><var>r₀</var><input type="text" name="r0" placeholder="N/A"></label>
+                <label><var>b</var><input type="text" name="b" placeholder="N/A"></label>
+                <label><var>R²</var><input type="text" name="rSqr" placeholder="N/A" readonly></label>
+            </div>
         </fieldset>
 
         <figure class="graph-group">

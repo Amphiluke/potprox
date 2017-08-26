@@ -4,6 +4,8 @@
 @fg-color: #f9df08;
 @fg-color-light:lighten(@fg-color, 30%);
 
+@monospace:Consolas,Inconsolata,monospace;
+
 .hidden {
     display:none !important;
 }
@@ -50,11 +52,17 @@ select {
     max-width:100%;
 }
 
+input[type="text"],
+select {
+    height:24px;
+    line-height:24px;
+}
+
 textarea {
     background:@fg-color-light;
     border:none;
     box-sizing:border-box;
-    font-family:monospace;
+    font:normal 0.9em @monospace;
     padding:3px 5px;
     resize:vertical;
     width:100%;
@@ -120,13 +128,14 @@ button[type="submit"] {
         border:1px solid @fg-color;
         border-top-right-radius:4px;
         content:attr(data-format-label);
-        font:9px Consolas,monospace;
+        font:9px @monospace;
         margin-right:5px;
         padding:5px 1px;
         vertical-align:middle;
     }
     input {
         flex-grow:1;
+        max-width:calc(~"100vw - 70px");
         vertical-align:middle;
     }
 }
@@ -154,11 +163,55 @@ button[type="submit"] {
     }
 }
 
+.result-group legend span {
+    cursor:help;
+    display:none;
+    margin:0 3px;
+
+    .user-modified& {
+        display:inline;
+    }
+}
+
 .result {
-    background:@fg-color-light;
-    color:#000;
-    display:block;
-    padding:0.25em 0.5em;
+    display:flex;
+    justify-content:center;
+
+    > label {
+        padding:0 5px;
+        position:relative;
+
+        &:first-child {
+            padding-left:0;
+        }
+        &:last-child {
+            padding-right:0;
+        }
+
+        var {
+            color:@bg-color;
+            font:italic 0.9em/24px @monospace;
+            height:100%;
+            position:absolute;
+            text-align:right;
+            top:0;
+            width:30px;
+
+            &:after {
+                content:":";
+                font-style:normal;
+            }
+        }
+
+        input {
+            background:@fg-color-light;
+            border:none;
+            font:normal 0.9em/24px @monospace;
+            padding:2px 3px 2px 35px;
+            vertical-align:top;
+            width:100%;
+        }
+    }
 }
 
 .graph-group {
@@ -203,6 +256,15 @@ footer {
 
         .ctrl {
             width:100%;
+        }
+    }
+
+    .result {
+        display:block;
+
+        > label {
+            display:block;
+            padding:0;
         }
     }
 }
