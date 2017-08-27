@@ -10,6 +10,17 @@ class Buckingham {
     }
 
     /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "Buckingham";
+    }
+
+    /**
      * Create an instance of the Buckingham potential via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
@@ -173,7 +184,7 @@ class Buckingham {
     }
 
     toJSON() {
-        return {type: "Buckingham", d0: this.d0, r0: this.r0, a: this.a};
+        return {type: Buckingham.type, d0: this.d0, r0: this.r0, a: this.a};
     }
 }
 
@@ -186,6 +197,17 @@ class LennardJones {
         instanceData.set(this, {});
         this.epsilon = epsilon;
         this.sigma = sigma;
+    }
+
+    /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "LennardJones";
     }
 
     /**
@@ -266,7 +288,7 @@ class LennardJones {
     }
 
     toJSON() {
-        return {type: "LennardJones", epsilon: this.epsilon, sigma: this.sigma};
+        return {type: LennardJones.type, epsilon: this.epsilon, sigma: this.sigma};
     }
 }
 
@@ -280,6 +302,17 @@ class Morse {
         this.d0 = d0;
         this.r0 = r0;
         this.a = a;
+    }
+
+    /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "Morse";
     }
 
     /**
@@ -440,7 +473,7 @@ class Morse {
     }
 
     toJSON() {
-        return {type: "Morse", d0: this.d0, r0: this.r0, a: this.a};
+        return {type: Morse.type, d0: this.d0, r0: this.r0, a: this.a};
     }
 }
 
@@ -454,6 +487,17 @@ class Rydberg {
         this.d0 = d0;
         this.r0 = r0;
         this.b = b;
+    }
+
+    /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "Rydberg";
     }
 
     /**
@@ -615,7 +659,7 @@ class Rydberg {
     }
 
     toJSON() {
-        return {type: "Rydberg", d0: this.d0, r0: this.r0, b: this.b};
+        return {type: Rydberg.type, d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 
@@ -629,6 +673,17 @@ class Varshni3 {
         this.d0 = d0;
         this.r0 = r0;
         this.b = b;
+    }
+
+    /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "Varshni3";
     }
 
     /**
@@ -789,19 +844,23 @@ class Varshni3 {
     }
 
     toJSON() {
-        return {type: "Varshni3", d0: this.d0, r0: this.r0, b: this.b};
+        return {type: Varshni3.type, d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 
 module.exports = Varshni3;
 },{}],6:[function(require,module,exports){
-let potprox = {
-    LennardJones: require("./potentials/lennard-jones.js"),
-    Buckingham: require("./potentials/buckingham.js"),
-    Morse: require("./potentials/morse.js"),
-    Rydberg: require("./potentials/rydberg.js"),
-    Varshni3: require("./potentials/varshni3.js")
-};
+let potentialClasses = [
+    require("./potentials/lennard-jones.js"),
+    require("./potentials/buckingham.js"),
+    require("./potentials/morse.js"),
+    require("./potentials/rydberg.js"),
+    require("./potentials/varshni3.js")
+];
+
+let potprox = Object.create(null);
+
+potentialClasses.forEach(potentialClass => potprox[potentialClass.type] = potentialClass);
 
 // Other properties of the potprox object are non-enumerable to avoid mixing them with
 // potential classes when using such methods as Object.keys, Object.values etc.
