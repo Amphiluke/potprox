@@ -154,9 +154,13 @@ You may instantiate the `Varshni3` class as follows:
 let varshni = new potprox.Varshni3({d0: 0.0368, r0: 5.389, b: 0.0597});
 ```
 
-### Potential class methods
+### Potential class members
 
-All the classes in the `potprox` object have a few common methods listed below.
+All the classes in the `potprox` object have a few members listed below.
+
+#### `type`
+
+The *static* read-only property containing the name of the potential class (e.g. `"LennardJones"`, `"Morse"`, `"Buckingham"` etc.).
 
 #### `from(data [, settings])`
 
