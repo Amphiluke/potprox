@@ -9,6 +9,17 @@ class Morse {
     }
 
     /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "Morse";
+    }
+
+    /**
      * Create an instance of the Morse potential via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
@@ -166,7 +177,7 @@ class Morse {
     }
 
     toJSON() {
-        return {type: "Morse", d0: this.d0, r0: this.r0, a: this.a};
+        return {type: Morse.type, d0: this.d0, r0: this.r0, a: this.a};
     }
 }
 

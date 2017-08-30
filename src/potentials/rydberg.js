@@ -9,6 +9,17 @@ class Rydberg {
     }
 
     /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "Rydberg";
+    }
+
+    /**
      * Create an instance of the Rydberg potential via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
@@ -167,7 +178,7 @@ class Rydberg {
     }
 
     toJSON() {
-        return {type: "Rydberg", d0: this.d0, r0: this.r0, b: this.b};
+        return {type: Rydberg.type, d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 

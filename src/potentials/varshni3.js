@@ -9,6 +9,17 @@ class Varshni3 {
     }
 
     /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "Varshni3";
+    }
+
+    /**
      * Create an instance of the Varshni potential (III) via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
@@ -166,7 +177,7 @@ class Varshni3 {
     }
 
     toJSON() {
-        return {type: "Varshni3", d0: this.d0, r0: this.r0, b: this.b};
+        return {type: Varshni3.type, d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 

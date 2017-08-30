@@ -8,6 +8,17 @@ class LennardJones {
     }
 
     /**
+     * The name of the potential class. To be used instead of
+     * `instance.constructor.name` (since in the minified version names are mangled)
+     * @type {String}
+     * @readonly
+     * @static
+     */
+    static get type() {
+        return "LennardJones";
+    }
+
+    /**
      * Create an instance of the Lennard-Jones potential via approximation of input data
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
      * @returns {LennardJones}
@@ -61,6 +72,13 @@ class LennardJones {
         instanceData.get(this).sigma = value;
     }
 
+    get r0() {
+        return 1.122462048309373 * this.sigma;
+    }
+    set r0(value) {
+        this.sigma = value / 1.122462048309373;
+    }
+
     /**
      * Calculate the energy for the given interatomic distance
      * @param {Number} r
@@ -78,7 +96,7 @@ class LennardJones {
     }
 
     toJSON() {
-        return {type: "LennardJones", epsilon: this.epsilon, sigma: this.sigma};
+        return {type: LennardJones.type, epsilon: this.epsilon, sigma: this.sigma};
     }
 }
 
