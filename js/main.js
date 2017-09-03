@@ -186,6 +186,7 @@
             this.addEventListener("#file-csv", "change", "fileCSVChangeHandler");
             this.addEventListener(this.ui.get("#file-tab-ctrl").querySelector(".tab-sheet[data-format='winbond']"),
                 "change", "fileWinbondChangeHandler");
+            this.addEventListener("#data", "input", "dataInputHandler");
             this.addEventListener("#data", "change", "dataChangeHandler");
             this.addEventListener("#potential", "change", "potentialChangeHandler");
             this.addEventListener("#ctrl-form", "submit", "submitHandler");
@@ -228,6 +229,15 @@
                 .catch(error => console.error(error));
             this.potential = null;
             this.updateParamSlots();
+        },
+
+        dataInputHandler({target}) {
+            let value = target.value.trim();
+            // Automatically convert TSV to CSV
+            if (value.includes("\t")) {
+                let replacement = value.includes(",") ? ";" : ","; // don't mix with decimal separator
+                target.value = value.replace(/\t/g, replacement);
+            }
         },
 
         dataChangeHandler() {
