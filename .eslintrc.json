@@ -1,27 +1,115 @@
 {
-    "env": {
-        "browser": true,
-        "commonjs": true,
-        "es6": true,
-        "node": true
-    },
-    "extends": "eslint:recommended",
-    "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
-    }
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "arrow-body-style": [
+      "warn"
+    ],
+    "arrow-spacing": [
+      "error"
+    ],
+    "brace-style": [
+      "error",
+      "1tbs"
+    ],
+    "comma-spacing": [
+      "error"
+    ],
+    "comma-style": [
+      "error"
+    ],
+    "func-call-spacing": [
+      "error"
+    ],
+    "indent": [
+      "error",
+      4
+    ],
+    "key-spacing": [
+      "error"
+    ],
+    "keyword-spacing": [
+      "error"
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "new-cap": [
+      "warn"
+    ],
+    "no-trailing-spaces": [
+      "warn"
+    ],
+    "no-unneeded-ternary": [
+      "warn"
+    ],
+    "no-useless-computed-key": [
+      "error"
+    ],
+    "no-var": [
+      "error"
+    ],
+    "no-whitespace-before-property": [
+      "warn"
+    ],
+    "object-curly-spacing": [
+      "warn"
+    ],
+    "object-shorthand": [
+      "warn"
+    ],
+    "operator-linebreak": [
+      "error",
+      "after"
+    ],
+    "prefer-arrow-callback": [
+      "error",
+      {"allowNamedFunctions": true}
+    ],
+    "prefer-rest-params": [
+      "error"
+    ],
+    "quotes": [
+      "error",
+      "double"
+    ],
+    "rest-spread-spacing": [
+      "error"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "semi-spacing": [
+      "error"
+    ],
+    "semi-style": [
+      "error"
+    ],
+    "space-before-function-paren": [
+      "error",
+      {"anonymous": "always", "named": "never", "asyncArrow": "always"}
+    ],
+    "space-in-parens": [
+      "error"
+    ],
+    "space-infix-ops": [
+      "error"
+    ],
+    "space-unary-ops": [
+      "error"
+    ],
+    "spaced-comment": [
+      "warn"
+    ],
+    "switch-colon-spacing": [
+      "error"
+    ]
+  }
 }
