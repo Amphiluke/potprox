@@ -7,11 +7,18 @@
   },
   "extends": "eslint:recommended",
   "rules": {
+    "array-bracket-spacing": [
+      "error"
+    ],
     "arrow-body-style": [
       "warn"
     ],
     "arrow-spacing": [
       "error"
+    ],
+    "block-spacing": [
+      "error",
+      "never"
     ],
     "brace-style": [
       "error",
@@ -21,6 +28,22 @@
       "error"
     ],
     "comma-style": [
+      "error"
+    ],
+    "computed-property-spacing": [
+      "error"
+    ],
+    "curly": [
+      "error"
+    ],
+    "dot-location": [
+      "error",
+      "property"
+    ],
+    "dot-notation": [
+      "error"
+    ],
+    "eqeqeq": [
       "error"
     ],
     "func-call-spacing": [
@@ -43,11 +66,20 @@
     "new-cap": [
       "warn"
     ],
+    "new-parens": [
+      "error"
+    ],
+    "no-multi-spaces": [
+      "error"
+    ],
     "no-trailing-spaces": [
       "warn"
     ],
     "no-unneeded-ternary": [
       "warn"
+    ],
+    "no-useless-call": [
+      "error"
     ],
     "no-useless-computed-key": [
       "error"
@@ -59,9 +91,12 @@
       "warn"
     ],
     "object-curly-spacing": [
-      "warn"
+      "error"
     ],
     "object-shorthand": [
+      "warn"
+    ],
+    "operator-assignment": [
       "warn"
     ],
     "operator-linebreak": [
@@ -90,6 +125,9 @@
       "error"
     ],
     "semi-style": [
+      "error"
+    ],
+    "space-before-blocks": [
       "error"
     ],
     "space-before-function-paren": [

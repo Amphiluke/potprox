@@ -31,7 +31,7 @@
     "babel-core": "^6.26.0",
     "babel-preset-babili": "0.1.4",
     "browserify": "^14.4.0",
-    "eslint": "^4.5.0",
+    "eslint": "^4.7.0",
     "through2": "^2.0.3"
   }
 }
