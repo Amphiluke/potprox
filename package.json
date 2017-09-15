@@ -4,8 +4,8 @@
   "description": "Approximation of computed data with empirical pair potentials",
   "main": "src/potprox.js",
   "scripts": {
-    "lint": "eslint src/**/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/**/*.js test/**/*.js",
+    "test": "ava test/**/*-spec.js --verbose",
     "build": "node scripts/build.js"
   },
   "repository": {
@@ -27,6 +27,7 @@
   },
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
+    "ava": "^0.22.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-preset-babili": "0.1.4",
