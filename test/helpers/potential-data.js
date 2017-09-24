@@ -46,8 +46,8 @@ potentialData.set("ab initio", {
 
 let potentialParams = {
     LennardJones: {
-        epsilon: 0.06830448257027022,
-        sigma: 4.5726017519945295
+        epsilon: 0.06830448257027043,
+        sigma: 4.572601751994529
     },
     Buckingham: {
         d0: 0.06716628791443133,

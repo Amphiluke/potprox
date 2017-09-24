@@ -1,6 +1,7 @@
 import test from "ava";
 import potprox from "../src/potprox.js";
 import potentialData from "./helpers/potential-data.js";
+import utils from "./helpers/utils.js";
 
 test("Check `rSqr` for test potential data", t => {
     Object.values(potprox).forEach(PotentialClass => {
@@ -16,7 +17,7 @@ test("`rSqr` is equal to 1 for perfectly fitted data", t => {
     potentialData.forEach((data, type) => {
         if (data.params) {
             let rSqr = potprox.utils.rSqr(data.data, new potprox[type](data.params));
-            t.true(1 - rSqr <= Number.EPSILON);
+            t.true(utils.equal(rSqr, 1));
         }
     });
 });

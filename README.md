@@ -36,7 +36,7 @@ The version for browsers (and web workers) is also available: check out the [dis
 
 ```javascript
 importScripts("dist/potprox.min.js");
-````
+```
 
 ## Usage
 

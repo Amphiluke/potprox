@@ -161,7 +161,7 @@ class Buckingham {
             throw new TypeError("The 'a' parameter should be a finite number");
         }
         if (value <= 0) {
-            throw new RangeError("The 'a' parameter should be greater than 0");
+            throw new RangeError("The 'a' parameter should be greater than zero");
         }
         instanceData.get(this).a = value;
     }
