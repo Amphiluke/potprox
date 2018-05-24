@@ -1,0 +1,18 @@
+importScripts("../../dist/potprox.min.js");
+importScripts("./datasets.js");
+
+self.addEventListener("message", ({data = {}}) => {
+    if (data.type !== "recalc") {
+        return;
+    }
+    let dataset = self.datasets[data.datasetType || "default"];
+    let result = {};
+    Object.keys(self.potprox).forEach(name => {
+        let potential = self.potprox[name].from(dataset, {d0Conv: 0.0001, r0Conv: 0.0001, aConv: 0.0001, bConv: 0.0001});
+        result[name] = {
+            potential: potential.toJSON(),
+            rSqr: self.potprox.utils.rSqr(dataset, potential)
+        };
+    });
+    self.postMessage({type: "recalcDone", result});
+});

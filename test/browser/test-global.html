@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test potprox as a global object</title>
+</head>
+<body>
+
+<form id="datasets" action="#"></form>
+<pre id="result"></pre>
+
+<script src="../../dist/potprox.min.js"></script>
+<script src="datasets.js"></script>
+<script src="ui.js"></script>
+<script>
+    window.addEventListener("message", ({data = {}}) => {
+        if (data.type !== "recalc") {
+            return;
+        }
+        let dataset = window.datasets[data.datasetType || "default"];
+        let result = {};
+        Object.keys(potprox).forEach(name => {
+            let potential = potprox[name].from(dataset, {d0Conv: 0.0001, r0Conv: 0.0001, aConv: 0.0001, bConv: 0.0001});
+            result[name] = {
+                potential: potential.toJSON(),
+                rSqr: potprox.utils.rSqr(dataset, potential)
+            };
+        });
+        window.postMessage({type: "recalcDone", result}, "*");
+    });
+</script>
+</body>
+</html>

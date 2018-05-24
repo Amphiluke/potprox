@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test potprox within a WebWorker</title>
+</head>
+<body>
+
+<form id="datasets" action="#"></form>
+<pre id="result"></pre>
+
+<script src="datasets.js"></script>
+<script src="ui.js"></script>
+<script>
+    let worker = new Worker("./worker.js");
+    worker.addEventListener("message", ({data}) => window.postMessage(data, "*"));
+    window.addEventListener("message", ({data = {}}) => {
+        if (data.type === "recalc") {
+            worker.postMessage(data);
+        }
+    });
+</script>
+</body>
+</html>
