@@ -100,4 +100,4 @@ class LennardJones {
     }
 }
 
-module.exports = LennardJones;
+export default LennardJones;

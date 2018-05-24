@@ -187,4 +187,4 @@ class Buckingham {
     }
 }
 
-module.exports = Buckingham;
+export default Buckingham;

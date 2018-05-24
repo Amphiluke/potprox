@@ -1,7 +1,7 @@
 let instanceData = new WeakMap();
 
-class Varshni3 {
-    constructor({d0 = 1, r0 = 1, b = 1} = {}) {
+class Rydberg {
+    constructor({d0 = 1, r0 = 1, b = 2} = {}) {
         instanceData.set(this, {});
         this.d0 = d0;
         this.r0 = r0;
@@ -16,14 +16,14 @@ class Varshni3 {
      * @static
      */
     static get type() {
-        return "Varshni3";
+        return "Rydberg";
     }
 
     /**
-     * Create an instance of the Varshni potential (III) via approximation of input data.
+     * Create an instance of the Rydberg potential via approximation of input data.
      * This method performs fast initial approximation and is not very accurate.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
-     * @returns {Varshni3}
+     * @returns {Rydberg}
      * @static
      */
     static fastFrom(data) {
@@ -33,6 +33,7 @@ class Varshni3 {
         if (data.length < 3) {
             throw new Error("Too little points. Approximation is impossible");
         }
+        data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
         let d0 = Number.POSITIVE_INFINITY;
         let r0 = 1;
         for (let {r, e} of data) {
@@ -42,39 +43,38 @@ class Varshni3 {
             }
         }
         d0 = Math.abs(d0);
-        let b = 0;
-        let counter = 0;
-        for (let {r, e} of data) {
-            let eFactor = Math.sqrt(1 + e / d0);
-            let bTemp = Number.NaN;
-            if (r > r0) {
-                bTemp = Math.log(r / r0 * (1 - eFactor)) / (r0 * r0 - r * r);
-            } else if (r < r0) {
-                bTemp = Math.log(r / r0 * (1 + eFactor)) / (r0 * r0 - r * r);
-            }
-            if (Number.isFinite(bTemp)) {
-                b += bTemp;
-                counter++;
+        let pt1, pt2;
+        for (let i = 1; i < data.length; i++) {
+            pt1 = data[i - 1];
+            pt2 = data[i];
+            if (pt2.r >= r0 || pt1.e < 0 || pt2.e < 0) {
+                break;
             }
         }
-        b /= counter;
-        return new Varshni3({d0, r0, b});
+        let b;
+        if (pt1 && pt2 && pt1.r < r0 && pt2.r <= r0) {
+            let sigma = pt1.e * (pt1.r - pt2.r) / (pt2.e - pt1.e) + pt1.r;
+            if (sigma > 0) {
+                b = r0 / (r0 - sigma);
+            }
+        }
+        return new Rydberg({d0, r0, b});
     }
 
     /**
-     * Create an instance of the Varshni potential (III) via approximation of input data.
+     * Create an instance of the Rydberg potential via approximation of input data.
      * This method gives more accurate approximation results than the `fastFrom` method.
      * @param {Array.<{r: Number, e: Number}>} data - Coordinates for approximation
      * @param {Object} [settings] - Approximation settings
      * @param {Number} [settings.d0Conv=0.001] - `d0` convergence factor
      * @param {Number} [settings.r0Conv=0.001] - `r0` convergence factor
      * @param {Number} [settings.bConv=0.001] - `b` convergence factor
-     * @returns {Varshni3}
+     * @returns {Rydberg}
      * @static
      */
     static from(data, {d0Conv = 0.001, r0Conv = 0.001, bConv = 0.001} = {}) {
-        let varshni = this.fastFrom(data);
-        let {d0, r0, b} = varshni; // initial approximation
+        let rydberg = this.fastFrom(data);
+        let {d0, r0, b} = rydberg; // initial approximation
 
         // Convergence limits
         const d0Lim = d0 * d0Conv;
@@ -87,11 +87,12 @@ class Varshni3 {
         do {
             let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
             for (let {r, e} of data) {
-                let exp = r0 / r * Math.exp(b * (r0 * r0 - r * r));
-                let k = -d0 + d0 * (1 - exp) * (1 - exp);
+                let factor = b * (r / r0 - 1);
+                let exp = Math.exp(-factor);
+                let k = -d0 * (1 + factor) * exp;
                 let l = k / d0;
-                let m = 2 * d0 * (1 - exp) * (-exp / r0 - exp * 2 * b * r0);
-                let n = 2 * d0 * (1 - exp) * exp * (r * r - r0 * r0);
+                let m = -d0 * b * r / (r0 * r0) * exp * factor;
+                let n = d0 * factor / b * exp * factor;
 
                 c1 += l * l;
                 c2 += m * l;
@@ -114,10 +115,10 @@ class Varshni3 {
             b += db;
         } while ((Math.abs(dd0) > d0Lim) && (Math.abs(dr0) > r0Lim) && (Math.abs(db) > bLim));
 
-        varshni.d0 = d0;
-        varshni.r0 = r0;
-        varshni.b = b;
-        return varshni;
+        rydberg.d0 = d0;
+        rydberg.r0 = r0;
+        rydberg.b = b;
+        return rydberg;
     }
 
     get d0() {
@@ -153,8 +154,8 @@ class Varshni3 {
         if (!Number.isFinite(value)) {
             throw new TypeError("The 'b' parameter should be a finite number");
         }
-        if (value <= 0) {
-            throw new RangeError("The 'b' parameter should be greater than zero");
+        if (value <= 1) {
+            throw new RangeError("The 'b' parameter should be greater than 1");
         }
         instanceData.get(this).b = value;
     }
@@ -172,13 +173,13 @@ class Varshni3 {
             throw new RangeError("Distance shouldn't be less than zero");
         }
         let {d0, r0, b} = this;
-        let factor = 1 - r0 / r * Math.exp(b * (r0 * r0 - r * r));
-        return d0 * factor * factor - d0;
+        let factor = b * (r - r0) / r0;
+        return -d0 * (1 + factor) * Math.exp(-factor);
     }
 
     toJSON() {
-        return {type: Varshni3.type, d0: this.d0, r0: this.r0, b: this.b};
+        return {type: Rydberg.type, d0: this.d0, r0: this.r0, b: this.b};
     }
 }
 
-module.exports = Varshni3;
+export default Rydberg;

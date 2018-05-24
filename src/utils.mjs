@@ -1,4 +1,4 @@
-module.exports = {
+let utils = {
     /**
      * Calculate the coefficient of determination to measure the goodness of fit
      * @param {Array.<{r: Number, e: Number}>} data - Experimental/ab initio data
@@ -23,3 +23,5 @@ module.exports = {
         return 1 - ssRes / ssTot;
     }
 };
+
+export default utils;

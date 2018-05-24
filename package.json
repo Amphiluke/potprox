@@ -1,12 +1,12 @@
 {
   "name": "potprox",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Approximation of computed data with empirical pair potentials",
-  "main": "src/potprox.js",
+  "main": "dist/potprox.js",
   "scripts": {
     "lint": "eslint src/**/*.js test/**/*.js",
     "test": "ava test/**/*-spec.js --verbose",
-    "build": "node scripts/build.js"
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -27,12 +27,9 @@
   },
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
-    "ava": "^0.22.0",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-babili": "0.1.4",
-    "browserify": "^14.4.0",
-    "eslint": "^4.7.0",
-    "through2": "^2.0.3"
+    "ava": "^0.25.0",
+    "eslint": "^4.19.1",
+    "rollup": "^0.59.2",
+    "rollup-plugin-minify-es": "^1.1.1"
   }
 }

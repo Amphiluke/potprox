@@ -181,4 +181,4 @@ class Morse {
     }
 }
 
-module.exports = Morse;
+export default Morse;

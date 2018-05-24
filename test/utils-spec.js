@@ -1,5 +1,5 @@
 import test from "ava";
-import potprox from "../src/potprox.js";
+import potprox from "../dist/potprox.js";
 import potentialData from "./helpers/potential-data.js";
 import utils from "./helpers/utils.js";
 
