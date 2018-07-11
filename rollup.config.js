@@ -1,4 +1,4 @@
-import minify from "rollup-plugin-minify-es";
+import {terser} from "rollup-plugin-terser";
 import pkg from "./package.json";
 
 function getConfig(useMinify = false) {
@@ -13,7 +13,9 @@ function getConfig(useMinify = false) {
     };
     if (useMinify) {
         config.plugins = [
-            minify({output: {comments: /^!/}})
+            terser({
+                output: {comments: /^!/}
+            })
         ];
     }
     return config;
