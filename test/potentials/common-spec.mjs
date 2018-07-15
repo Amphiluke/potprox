@@ -1,5 +1,5 @@
 import test from "ava";
-import potprox from "../../dist/potprox.js";
+import potprox from "../../dist/potprox.mjs";
 
 test("Every potential class has static read-only property `type`", t => {
     Object.values(potprox).forEach(PotentialClass => {

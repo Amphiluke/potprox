@@ -235,6 +235,40 @@ let rSqr = potprox.utils.rSqr(data, morse);
 console.log(`Coefficient of determination = ${rSqr}`);
 ```
 
+#### `potprox.utils.points(potential [, options])`
+
+The method `potprox.utils.points()` can be used to generate points of a potential function in the given distance range. The method can take one or two arguments and returns a [Generator object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) which you may iterate over. The first parameter of the method is the approximating potential instance, and the second one (optional) is the configuration object. The following configuration options are available (each of them is optional):
+
+* `start` — starting interatomic distance to generate points from (by default it’s set to a half of the equilibrium distance);
+* `end` — end interatomic distance where to stop (by default it’s double of the equilibrium distance);
+* `step` — step for point generation (default step is configured to generate 50 points).
+
+```javascript
+let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
+
+// Generate 50 points starting from r = r0/2 and finishing at r = 2*r0
+for (let {r, e, index} of potprox.utils.points(morse)) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
+}
+
+// Generate 30 points in the user-defined distance range
+let start = 5.0;
+let end = 8.5;
+let pointCount = 30;
+let step = (end - start) / (pointCount - 1);
+for (let {r, e, index} of potprox.utils.points(morse, {start, end, step})) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
+}
+
+// Generate points infinitely until the given energy threshold is reached
+for (let {r, e, index} of potprox.utils.points(morse, {start: 5.0, end: Infinity, step: 0.1})) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(5)} eV`);
+    if (e > -0.001) {
+        break;
+    }
+}
+```
+
 ## Tips
 
 The overridden method `toJSON()` allows the instances of the potprox potential classes to be easily serialized to a JSON string, and restored from the JSON string later on.

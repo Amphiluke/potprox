@@ -22,7 +22,8 @@
         Object.entries(data.result).forEach(([name, result]) => {
             output += `================== ${name} ==================\n`;
             output += JSON.stringify(result.potential, null, 4);
-            output += `\nR² = ${result.rSqr}\n\n`;
+            output += `\nR² = ${result.rSqr}\n`;
+            output += `points: ${JSON.stringify(result.points, null, 4)}\n\n`;
         });
         document.getElementById("result").textContent = output;
     });

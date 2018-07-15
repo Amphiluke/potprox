@@ -3,10 +3,10 @@
   "version": "0.6.0",
   "description": "Approximation of computed data with empirical pair potentials",
   "main": "dist/potprox.js",
-  "module": "src/potprox.mjs",
+  "module": "dist/potprox.mjs",
   "scripts": {
-    "lint": "eslint src/**/*.js test/**/*.js",
-    "test": "ava test/**/*-spec.js --verbose",
+    "lint": "eslint src/**/*.mjs test/**/*.mjs",
+    "test": "ava",
     "build": "rollup -c"
   },
   "repository": {
@@ -28,7 +28,7 @@
   },
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
-    "ava": "^0.25.0",
+    "ava": "1.0.0-beta.6",
     "eslint": "^5.1.0",
     "rollup": "^0.62.0",
     "rollup-plugin-terser": "^1.0.1"
