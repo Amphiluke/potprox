@@ -1,5 +1,7 @@
 # potprox
 
+Approximation of computed data with empirical pair potentials.
+
 ## Synopsis
 
 It is a quite common case when there is a need to describe computed numerical *ab initio* data with some analytical form of pair potential (e.g. the [Lennard-Jones function](https://en.wikipedia.org/wiki/Lennard-Jones_potential) or the [Morse function](https://en.wikipedia.org/wiki/Morse_potential)).
@@ -16,7 +18,7 @@ Potprox uses the [method of least squares](https://en.wikipedia.org/wiki/Least_s
 
 Use the module in [environments with ES6 support](https://kangax.github.io/compat-table/es6/).
 
-## Install
+## Install and load potprox
 
 **As a NodeJS module:**
 
@@ -30,6 +32,12 @@ The version for browsers (and web workers) is also available: check out the [dis
 
 ```html
 <script src="dist/potprox.min.js"></script>
+```
+
+If you use ES modules, you may import the potprox module from the [potprox.min.mjs](dist/potprox.min.mjs) file.
+
+```javascript
+import potprox from "./dist/potprox.min.mjs";
 ```
 
 **Web workers:**
