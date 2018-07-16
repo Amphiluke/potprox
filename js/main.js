@@ -68,13 +68,9 @@
             return potential;
         },
 
-        makeCurveData(potential, rMin, rMax) {
-            let curveData = [];
-            for (let r = rMin, step = (rMax - rMin) / 50; r < rMax; r += step) {
-                curveData.push({x: r, y: potential.at(r)});
-            }
-            curveData.push({x: rMax, y: potential.at(rMax)});
-            return curveData;
+        makeCurveData(potential, start, end) {
+            return [...potprox.utils.points(potential, {start, end})]
+                .map(({r: x, e: y}) => ({x, y}));
         }
     };
 
