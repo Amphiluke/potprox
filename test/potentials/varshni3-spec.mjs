@@ -1,7 +1,7 @@
 import test from "ava";
-import potprox from "../../dist/potprox.js";
-import potentialData from "../helpers/potential-data.js";
-import utils from "../helpers/utils.js";
+import potprox from "../../dist/potprox.mjs";
+import potentialData from "../helpers/potential-data.mjs";
+import utils from "../helpers/utils.mjs";
 
 test("`d0` parameter validation", t => {
     t.throws(() => new potprox.Varshni3({d0: ""}), TypeError);

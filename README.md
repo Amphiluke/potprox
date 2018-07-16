@@ -1,5 +1,7 @@
 # potprox
 
+Approximation of computed data with empirical pair potentials.
+
 ## Synopsis
 
 It is a quite common case when there is a need to describe computed numerical *ab initio* data with some analytical form of pair potential (e.g. the [Lennard-Jones function](https://en.wikipedia.org/wiki/Lennard-Jones_potential) or the [Morse function](https://en.wikipedia.org/wiki/Morse_potential)).
@@ -16,7 +18,7 @@ Potprox uses the [method of least squares](https://en.wikipedia.org/wiki/Least_s
 
 Use the module in [environments with ES6 support](https://kangax.github.io/compat-table/es6/).
 
-## Install
+## Install and load potprox
 
 **As a NodeJS module:**
 
@@ -30,6 +32,12 @@ The version for browsers (and web workers) is also available: check out the [dis
 
 ```html
 <script src="dist/potprox.min.js"></script>
+```
+
+If you use ES modules, you may import the potprox module from the [potprox.min.mjs](dist/potprox.min.mjs) file.
+
+```javascript
+import potprox from "./dist/potprox.min.mjs";
 ```
 
 **Web workers:**
@@ -233,6 +241,40 @@ Use the method `potprox.utils.rSqr()` to calculate the [coefficient of determina
 let morse = potprox.Morse.from(data);
 let rSqr = potprox.utils.rSqr(data, morse);
 console.log(`Coefficient of determination = ${rSqr}`);
+```
+
+#### `potprox.utils.points(potential [, options])`
+
+The method `potprox.utils.points()` can be used to generate points of a potential function in the given distance range. The method can take one or two arguments and returns a [Generator object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) which you may iterate over. The first parameter of the method is the approximating potential instance, and the second one (optional) is the configuration object. The following configuration options are available (each of them is optional):
+
+* `start` — starting interatomic distance to generate points from (by default it’s set to a half of the equilibrium distance);
+* `end` — end interatomic distance where to stop (by default it’s double of the equilibrium distance);
+* `step` — step for point generation (default step is configured to generate 50 points).
+
+```javascript
+let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
+
+// Generate 50 points starting from r = r0/2 and finishing at r = 2*r0
+for (let {r, e, index} of potprox.utils.points(morse)) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
+}
+
+// Generate 30 points in the user-defined distance range
+let start = 5.0;
+let end = 8.5;
+let pointCount = 30;
+let step = (end - start) / (pointCount - 1);
+for (let {r, e, index} of potprox.utils.points(morse, {start, end, step})) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
+}
+
+// Generate points infinitely until the given energy threshold is reached
+for (let {r, e, index} of potprox.utils.points(morse, {start: 5.0, end: Infinity, step: 0.1})) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(5)} eV`);
+    if (e > -0.001) {
+        break;
+    }
+}
 ```
 
 ## Tips
