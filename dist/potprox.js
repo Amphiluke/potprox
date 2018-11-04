@@ -1,17 +1,75 @@
 /*!
-potprox v0.6.0
+potprox v0.7.0
 https://amphiluke.github.io/potprox/
 */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.potprox = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (factory((global.potprox = {})));
+}(this, (function (exports) { 'use strict';
+
+    class AbstractProto {
+        /**
+         * Calculate the coefficient of determination to measure the goodness of fit
+         * @param {Array.<{r: Number, e: Number}>} data - Experimental/ab initio data
+         * @returns {Number}
+         * @see https://en.wikipedia.org/wiki/Coefficient_of_determination
+         */
+        rSqr(data) {
+            let avg = 0; // the mean of the experimental/ab initio data
+            let ssRes = 0; // the residual sum of squares (RSS)
+            for (let {r, e} of data) {
+                avg += e;
+                let residual = e - this.at(r);
+                ssRes += residual * residual;
+            }
+            avg /= data.length;
+            let ssTot = 0; // the total sum of squares
+            for (let {e} of data) {
+                let diff = e - avg;
+                ssTot += diff * diff;
+            }
+            return 1 - ssRes / ssTot;
+        }
+
+        /**
+         * Generate points of the potential curve
+         * @param {Object} [options] - Configuration options
+         * @param {Number} [options.start=this.r0/2] - Starting interatomic distance
+         * @param {Number} [options.end=this.r0*2] - End interatomic distance
+         * @param {Number} [options.step=(end-start)/49] - Step for point generation (defaults make 50 points)
+         * @returns {Generator<{r: Number, e: Number}>}
+         */
+        * points({start = this.r0 / 2, end = this.r0 * 2, step = (end - start) / 49} = {}) {
+            let i = 0;
+            let r = start;
+            let direction = Math.sign(end - start); // when end < start, iteration is backward
+            step = Math.abs(step) * direction; // the user may specify step as signed or not
+            while ((end - r) * direction >= 0) {
+                yield {r, e: this.at(r), index: i};
+                r = start + step * ++i;
+            }
+            return {r: end, e: this.at(end)};
+        }
+    }
+
+    const lackOfData = "Too little points. Approximation is impossible";
+
+    const arrExpected = "Approximated data must be an array of points";
+
+    const numExpected = (param) => `The “${param}” parameter must be a finite number`;
+
+    const greaterThan = (param, min = 0) => `The “${param}” parameter must be greater than ${min}`;
+
+    const distType = "Distance must be a number";
+
+    const distRange = "Distance mustn’t be less than 0";
 
     let instanceData = new WeakMap();
 
-    class LennardJones {
+    class LennardJones extends AbstractProto {
         constructor({epsilon = 1, sigma = 1} = {}) {
+            super();
             instanceData.set(this, {});
             this.epsilon = epsilon;
             this.sigma = sigma;
@@ -36,10 +94,10 @@ https://amphiluke.github.io/potprox/
          */
         static from(data) {
             if (!Array.isArray(data)) {
-                throw new TypeError("Approximated data should be an array of points");
+                throw new TypeError(arrExpected);
             }
             if (data.length < 3) {
-                throw new Error("Too little points. Approximation is impossible");
+                throw new Error(lackOfData);
             }
             let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0;
             for (let {r, e} of data) {
@@ -61,10 +119,10 @@ https://amphiluke.github.io/potprox/
         }
         set epsilon(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'epsilon' parameter should be a finite number");
+                throw new TypeError(numExpected("epsilon"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'epsilon' parameter should be greater than zero");
+                throw new RangeError(greaterThan("epsilon"));
             }
             instanceData.get(this).epsilon = value;
         }
@@ -74,10 +132,10 @@ https://amphiluke.github.io/potprox/
         }
         set sigma(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'sigma' parameter should be a finite number");
+                throw new TypeError(numExpected("sigma"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'sigma' parameter should be greater than zero");
+                throw new RangeError(greaterThan("sigma"));
             }
             instanceData.get(this).sigma = value;
         }
@@ -96,10 +154,10 @@ https://amphiluke.github.io/potprox/
          */
         at(r) {
             if (typeof r !== "number") {
-                throw new TypeError("Distance should be a number");
+                throw new TypeError(distType);
             }
             if (r < 0) {
-                throw new RangeError("Distance shouldn't be less than zero");
+                throw new RangeError(distRange);
             }
             let {epsilon, sigma} = this;
             return 4 * epsilon * (Math.pow(sigma / r, 12) - Math.pow(sigma / r, 6));
@@ -112,8 +170,9 @@ https://amphiluke.github.io/potprox/
 
     let instanceData$1 = new WeakMap();
 
-    class Buckingham {
+    class Buckingham extends AbstractProto {
         constructor({d0 = 1, r0 = 1, a = 2} = {}) {
+            super();
             instanceData$1.set(this, {});
             this.d0 = d0;
             this.r0 = r0;
@@ -140,10 +199,10 @@ https://amphiluke.github.io/potprox/
          */
         static fastFrom(data) {
             if (!Array.isArray(data)) {
-                throw new TypeError("Approximated data should be an array of points");
+                throw new TypeError(arrExpected);
             }
             if (data.length < 3) {
-                throw new Error("Too little points. Approximation is impossible");
+                throw new Error(lackOfData);
             }
             data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
             let d0 = Number.POSITIVE_INFINITY;
@@ -244,10 +303,10 @@ https://amphiluke.github.io/potprox/
         }
         set d0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'd0' parameter should be a finite number");
+                throw new TypeError(numExpected("d0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'd0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("d0"));
             }
             instanceData$1.get(this).d0 = value;
         }
@@ -257,10 +316,10 @@ https://amphiluke.github.io/potprox/
         }
         set r0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'r0' parameter should be a finite number");
+                throw new TypeError(numExpected("r0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'r0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("r0"));
             }
             instanceData$1.get(this).r0 = value;
         }
@@ -270,10 +329,10 @@ https://amphiluke.github.io/potprox/
         }
         set a(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'a' parameter should be a finite number");
+                throw new TypeError(numExpected("a"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'a' parameter should be greater than zero");
+                throw new RangeError(greaterThan("a"));
             }
             instanceData$1.get(this).a = value;
         }
@@ -285,10 +344,10 @@ https://amphiluke.github.io/potprox/
          */
         at(r) {
             if (typeof r !== "number") {
-                throw new TypeError("Distance should be a number");
+                throw new TypeError(distType);
             }
             if (r < 0) {
-                throw new RangeError("Distance shouldn't be less than zero");
+                throw new RangeError(distRange);
             }
             let {d0, r0, a} = this;
             return d0 / (a - 6) * (6 * Math.exp(a * (1 - r / r0)) - a * Math.pow(r0 / r, 6));
@@ -301,8 +360,9 @@ https://amphiluke.github.io/potprox/
 
     let instanceData$2 = new WeakMap();
 
-    class Morse {
+    class Morse extends AbstractProto {
         constructor({d0 = 1, r0 = 1, a = 1} = {}) {
+            super();
             instanceData$2.set(this, {});
             this.d0 = d0;
             this.r0 = r0;
@@ -329,10 +389,10 @@ https://amphiluke.github.io/potprox/
          */
         static fastFrom(data) {
             if (!Array.isArray(data)) {
-                throw new TypeError("Approximated data should be an array of points");
+                throw new TypeError(arrExpected);
             }
             if (data.length < 3) {
-                throw new Error("Too little points. Approximation is impossible");
+                throw new Error(lackOfData);
             }
             let d0 = Number.POSITIVE_INFINITY;
             let r0 = 1;
@@ -426,10 +486,10 @@ https://amphiluke.github.io/potprox/
         }
         set d0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'd0' parameter should be a finite number");
+                throw new TypeError(numExpected("d0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'd0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("d0"));
             }
             instanceData$2.get(this).d0 = value;
         }
@@ -439,10 +499,10 @@ https://amphiluke.github.io/potprox/
         }
         set r0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'r0' parameter should be a finite number");
+                throw new TypeError(numExpected("r0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'r0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("r0"));
             }
             instanceData$2.get(this).r0 = value;
         }
@@ -452,10 +512,10 @@ https://amphiluke.github.io/potprox/
         }
         set a(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'a' parameter should be a finite number");
+                throw new TypeError(numExpected("a"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'a' parameter should be greater than zero");
+                throw new RangeError(greaterThan("a"));
             }
             instanceData$2.get(this).a = value;
         }
@@ -467,10 +527,10 @@ https://amphiluke.github.io/potprox/
          */
         at(r) {
             if (typeof r !== "number") {
-                throw new TypeError("Distance should be a number");
+                throw new TypeError(distType);
             }
             if (r < 0) {
-                throw new RangeError("Distance shouldn't be less than zero");
+                throw new RangeError(distRange);
             }
             let {d0, r0, a} = this;
             let factor = 1 - Math.exp(a * (r0 - r));
@@ -484,8 +544,9 @@ https://amphiluke.github.io/potprox/
 
     let instanceData$3 = new WeakMap();
 
-    class Rydberg {
+    class Rydberg extends AbstractProto {
         constructor({d0 = 1, r0 = 1, b = 2} = {}) {
+            super();
             instanceData$3.set(this, {});
             this.d0 = d0;
             this.r0 = r0;
@@ -512,10 +573,10 @@ https://amphiluke.github.io/potprox/
          */
         static fastFrom(data) {
             if (!Array.isArray(data)) {
-                throw new TypeError("Approximated data should be an array of points");
+                throw new TypeError(arrExpected);
             }
             if (data.length < 3) {
-                throw new Error("Too little points. Approximation is impossible");
+                throw new Error(lackOfData);
             }
             data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
             let d0 = Number.POSITIVE_INFINITY;
@@ -610,10 +671,10 @@ https://amphiluke.github.io/potprox/
         }
         set d0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'd0' parameter should be a finite number");
+                throw new TypeError(numExpected("d0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'd0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("d0"));
             }
             instanceData$3.get(this).d0 = value;
         }
@@ -623,10 +684,10 @@ https://amphiluke.github.io/potprox/
         }
         set r0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'r0' parameter should be a finite number");
+                throw new TypeError(numExpected("r0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'r0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("r0"));
             }
             instanceData$3.get(this).r0 = value;
         }
@@ -636,10 +697,10 @@ https://amphiluke.github.io/potprox/
         }
         set b(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'b' parameter should be a finite number");
+                throw new TypeError(numExpected("b"));
             }
             if (value <= 1) {
-                throw new RangeError("The 'b' parameter should be greater than 1");
+                throw new RangeError(greaterThan("b", 1));
             }
             instanceData$3.get(this).b = value;
         }
@@ -651,10 +712,10 @@ https://amphiluke.github.io/potprox/
          */
         at(r) {
             if (typeof r !== "number") {
-                throw new TypeError("Distance should be a number");
+                throw new TypeError(distType);
             }
             if (r < 0) {
-                throw new RangeError("Distance shouldn't be less than zero");
+                throw new RangeError(distRange);
             }
             let {d0, r0, b} = this;
             let factor = b * (r - r0) / r0;
@@ -668,8 +729,9 @@ https://amphiluke.github.io/potprox/
 
     let instanceData$4 = new WeakMap();
 
-    class Varshni3 {
+    class Varshni3 extends AbstractProto {
         constructor({d0 = 1, r0 = 1, b = 1} = {}) {
+            super();
             instanceData$4.set(this, {});
             this.d0 = d0;
             this.r0 = r0;
@@ -696,10 +758,10 @@ https://amphiluke.github.io/potprox/
          */
         static fastFrom(data) {
             if (!Array.isArray(data)) {
-                throw new TypeError("Approximated data should be an array of points");
+                throw new TypeError(arrExpected);
             }
             if (data.length < 3) {
-                throw new Error("Too little points. Approximation is impossible");
+                throw new Error(lackOfData);
             }
             let d0 = Number.POSITIVE_INFINITY;
             let r0 = 1;
@@ -793,10 +855,10 @@ https://amphiluke.github.io/potprox/
         }
         set d0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'd0' parameter should be a finite number");
+                throw new TypeError(numExpected("d0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'd0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("d0"));
             }
             instanceData$4.get(this).d0 = value;
         }
@@ -806,10 +868,10 @@ https://amphiluke.github.io/potprox/
         }
         set r0(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'r0' parameter should be a finite number");
+                throw new TypeError(numExpected("r0"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'r0' parameter should be greater than zero");
+                throw new RangeError(greaterThan("r0"));
             }
             instanceData$4.get(this).r0 = value;
         }
@@ -819,10 +881,10 @@ https://amphiluke.github.io/potprox/
         }
         set b(value) {
             if (!Number.isFinite(value)) {
-                throw new TypeError("The 'b' parameter should be a finite number");
+                throw new TypeError(numExpected("b"));
             }
             if (value <= 0) {
-                throw new RangeError("The 'b' parameter should be greater than zero");
+                throw new RangeError(greaterThan("b"));
             }
             instanceData$4.get(this).b = value;
         }
@@ -834,10 +896,10 @@ https://amphiluke.github.io/potprox/
          */
         at(r) {
             if (typeof r !== "number") {
-                throw new TypeError("Distance should be a number");
+                throw new TypeError(distType);
             }
             if (r < 0) {
-                throw new RangeError("Distance shouldn't be less than zero");
+                throw new RangeError(distRange);
             }
             let {d0, r0, b} = this;
             let factor = 1 - r0 / r * Math.exp(b * (r0 * r0 - r * r));
@@ -849,68 +911,12 @@ https://amphiluke.github.io/potprox/
         }
     }
 
-    let utils = {
-        /**
-         * Calculate the coefficient of determination to measure the goodness of fit
-         * @param {Array.<{r: Number, e: Number}>} data - Experimental/ab initio data
-         * @param {Object} potential - Approximating potential instance
-         * @returns {Number}
-         * @see https://en.wikipedia.org/wiki/Coefficient_of_determination
-         */
-        rSqr(data, potential) {
-            let avg = 0; // the mean of the experimental/ab initio data
-            let ssRes = 0; // the residual sum of squares (RSS)
-            for (let {r, e} of data) {
-                avg += e;
-                let residual = e - potential.at(r);
-                ssRes += residual * residual;
-            }
-            avg /= data.length;
-            let ssTot = 0; // the total sum of squares
-            for (let {e} of data) {
-                let diff = e - avg;
-                ssTot += diff * diff;
-            }
-            return 1 - ssRes / ssTot;
-        },
+    exports.LennardJones = LennardJones;
+    exports.Buckingham = Buckingham;
+    exports.Morse = Morse;
+    exports.Rydberg = Rydberg;
+    exports.Varshni3 = Varshni3;
 
-        /**
-         * Generate points of the potential curve
-         * @param {Object} potential - Approximating potential instance
-         * @param {Object} [options] - Configuration options
-         * @param {Number} [options.start=potential.r0/2] - Starting interatomic distance
-         * @param {Number} [options.end=potential.r0*2] - End interatomic distance
-         * @param {Number} [options.step=(end-start)/49] - Step for point generation (defaults make 50 points)
-         * @returns {Generator<{r: Number, e: Number}>}
-         */
-        * points(potential, {start = potential.r0 / 2, end = potential.r0 * 2, step = (end - start) / 49} = {}) {
-            let i = 0;
-            let r = start;
-            let direction = Math.sign(end - start); // when end < start, iteration is backward
-            step = Math.abs(step) * direction; // the user may specify step as signed or not
-            while ((end - r) * direction >= 0) {
-                yield {r, e: potential.at(r), index: i};
-                r = start + step * ++i;
-            }
-            return {r: end, e: potential.at(end)};
-        }
-    };
-
-    let potprox = Object.create(null);
-    potprox[LennardJones.type] = LennardJones;
-    potprox[Buckingham.type] = Buckingham;
-    potprox[Morse.type] = Morse;
-    potprox[Rydberg.type] = Rydberg;
-    potprox[Varshni3.type] = Varshni3;
-
-    // Other properties of the potprox object are non-enumerable to avoid mixing them with
-    // potential classes when using such methods as Object.keys, Object.values etc.
-
-    Object.defineProperty(potprox, "utils", {
-        configurable: true,
-        value: utils
-    });
-
-    return potprox;
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
