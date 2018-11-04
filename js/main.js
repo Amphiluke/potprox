@@ -64,12 +64,12 @@
         approximate(data, potentialType) {
             let potproxData = this.toPotprox(data);
             let potential = potprox[potentialType].from(potproxData);
-            potential.rSqr = potprox.utils.rSqr(potproxData, potential);
+            potential._rSqr = potential.rSqr(potproxData);
             return potential;
         },
 
         makeCurveData(potential, start, end) {
-            return [...potprox.utils.points(potential, {start, end})]
+            return [...potential.points({start, end})]
                 .map(({r: x, e: y}) => ({x, y}));
         }
     };
@@ -165,7 +165,7 @@
 
         updateParamSlots() {
             let potential = this.potential;
-            let data = potential ? Object.assign({rSqr: potential.rSqr}, potential.toJSON()) : {};
+            let data = potential ? Object.assign({rSqr: potential._rSqr}, potential.toJSON()) : {};
             let selector = data.type ? `[data-potential="${data.type}"]` : "[data-potential]";
             let paramSlots = this.ui.get("#ctrl-form").querySelectorAll(`.result${selector} input[name]`);
             [...paramSlots].forEach(slot => slot.value = data[slot.name] || "");
@@ -266,7 +266,7 @@
                 return;
             }
             this.potential[target.name] = value;
-            this.potential.rSqr = undefined;
+            this.potential._rSqr = undefined;
             this.updateChart(this.potential);
         }
     };

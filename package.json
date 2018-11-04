@@ -22,14 +22,14 @@
   },
   "homepage": "https://github.com/Amphiluke/potprox#readme",
   "dependencies": {
-    "chart.js": "^2.7.2",
+    "chart.js": "^2.7.3",
     "normalize.css": "^8.0.0",
-    "potprox": "^0.6.0"
+    "potprox": "^0.7.0"
   },
   "devDependencies": {
-    "copyfiles": "^2.0.0",
-    "eslint": "^5.1.0",
-    "less": "^3.7.1",
+    "copyfiles": "^2.1.0",
+    "eslint": "^5.8.0",
+    "less": "^3.8.1",
     "less-plugin-clean-css": "^1.5.1"
   }
 }
