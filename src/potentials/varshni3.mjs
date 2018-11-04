@@ -1,7 +1,11 @@
+import AbstractProto from "./abstract-proto.mjs";
+import * as msg from "../messages.mjs";
+
 let instanceData = new WeakMap();
 
-class Varshni3 {
+class Varshni3 extends AbstractProto {
     constructor({d0 = 1, r0 = 1, b = 1} = {}) {
+        super();
         instanceData.set(this, {});
         this.d0 = d0;
         this.r0 = r0;
@@ -28,10 +32,10 @@ class Varshni3 {
      */
     static fastFrom(data) {
         if (!Array.isArray(data)) {
-            throw new TypeError("Approximated data should be an array of points");
+            throw new TypeError(msg.arrExpected);
         }
         if (data.length < 3) {
-            throw new Error("Too little points. Approximation is impossible");
+            throw new Error(msg.lackOfData);
         }
         let d0 = Number.POSITIVE_INFINITY;
         let r0 = 1;
@@ -125,10 +129,10 @@ class Varshni3 {
     }
     set d0(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'd0' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("d0"));
         }
         if (value <= 0) {
-            throw new RangeError("The 'd0' parameter should be greater than zero");
+            throw new RangeError(msg.greaterThan("d0"));
         }
         instanceData.get(this).d0 = value;
     }
@@ -138,10 +142,10 @@ class Varshni3 {
     }
     set r0(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'r0' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("r0"));
         }
         if (value <= 0) {
-            throw new RangeError("The 'r0' parameter should be greater than zero");
+            throw new RangeError(msg.greaterThan("r0"));
         }
         instanceData.get(this).r0 = value;
     }
@@ -151,10 +155,10 @@ class Varshni3 {
     }
     set b(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'b' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("b"));
         }
         if (value <= 0) {
-            throw new RangeError("The 'b' parameter should be greater than zero");
+            throw new RangeError(msg.greaterThan("b"));
         }
         instanceData.get(this).b = value;
     }
@@ -166,10 +170,10 @@ class Varshni3 {
      */
     at(r) {
         if (typeof r !== "number") {
-            throw new TypeError("Distance should be a number");
+            throw new TypeError(msg.distType);
         }
         if (r < 0) {
-            throw new RangeError("Distance shouldn't be less than zero");
+            throw new RangeError(msg.distRange);
         }
         let {d0, r0, b} = this;
         let factor = 1 - r0 / r * Math.exp(b * (r0 * r0 - r * r));

@@ -1,7 +1,11 @@
+import AbstractProto from "./abstract-proto.mjs";
+import * as msg from "../messages.mjs";
+
 let instanceData = new WeakMap();
 
-class Rydberg {
+class Rydberg extends AbstractProto {
     constructor({d0 = 1, r0 = 1, b = 2} = {}) {
+        super();
         instanceData.set(this, {});
         this.d0 = d0;
         this.r0 = r0;
@@ -28,10 +32,10 @@ class Rydberg {
      */
     static fastFrom(data) {
         if (!Array.isArray(data)) {
-            throw new TypeError("Approximated data should be an array of points");
+            throw new TypeError(msg.arrExpected);
         }
         if (data.length < 3) {
-            throw new Error("Too little points. Approximation is impossible");
+            throw new Error(msg.lackOfData);
         }
         data = data.slice().sort((pt1, pt2) => pt1.r - pt2.r);
         let d0 = Number.POSITIVE_INFINITY;
@@ -126,10 +130,10 @@ class Rydberg {
     }
     set d0(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'd0' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("d0"));
         }
         if (value <= 0) {
-            throw new RangeError("The 'd0' parameter should be greater than zero");
+            throw new RangeError(msg.greaterThan("d0"));
         }
         instanceData.get(this).d0 = value;
     }
@@ -139,10 +143,10 @@ class Rydberg {
     }
     set r0(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'r0' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("r0"));
         }
         if (value <= 0) {
-            throw new RangeError("The 'r0' parameter should be greater than zero");
+            throw new RangeError(msg.greaterThan("r0"));
         }
         instanceData.get(this).r0 = value;
     }
@@ -152,10 +156,10 @@ class Rydberg {
     }
     set b(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'b' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("b"));
         }
         if (value <= 1) {
-            throw new RangeError("The 'b' parameter should be greater than 1");
+            throw new RangeError(msg.greaterThan("b", 1));
         }
         instanceData.get(this).b = value;
     }
@@ -167,10 +171,10 @@ class Rydberg {
      */
     at(r) {
         if (typeof r !== "number") {
-            throw new TypeError("Distance should be a number");
+            throw new TypeError(msg.distType);
         }
         if (r < 0) {
-            throw new RangeError("Distance shouldn't be less than zero");
+            throw new RangeError(msg.distRange);
         }
         let {d0, r0, b} = this;
         let factor = b * (r - r0) / r0;

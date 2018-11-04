@@ -1,6 +1,7 @@
 scripts
 test
 ava.config.js
+rollup.config.js
 
 .idea
 .babelrc

@@ -15,7 +15,7 @@
 <script src="datasets.js"></script>
 <script src="ui.js"></script>
 <script type="module">
-    import potprox from "../../src/potprox.mjs";
+    import * as potprox from "../../src/potprox.mjs";
 
     window.addEventListener("message", ({data = {}}) => {
         if (data.type !== "recalc") {
@@ -27,8 +27,8 @@
             let potential = potprox[name].from(dataset, {d0Conv: 0.0001, r0Conv: 0.0001, aConv: 0.0001, bConv: 0.0001});
             result[name] = {
                 potential: potential.toJSON(),
-                rSqr: potprox.utils.rSqr(dataset, potential),
-                points: [...potprox.utils.points(potential, {start: 5, end: 10, step: (10 - 5) / 9})]
+                rSqr: potential.rSqr(dataset),
+                points: [...potential.points({start: 5, end: 10, step: (10 - 5) / 9})]
             };
         });
         window.postMessage({type: "recalcDone", result}, "*");

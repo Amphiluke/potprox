@@ -26,6 +26,10 @@ Use the module in [environments with ES6 support](https://kangax.github.io/compa
 npm install potprox
 ```
 
+```javascript
+let potprox = require("potprox");
+```
+
 The version for browsers (and web workers) is also available: check out the [dist directory](dist).
 
 **Browsers:**
@@ -34,10 +38,16 @@ The version for browsers (and web workers) is also available: check out the [dis
 <script src="dist/potprox.min.js"></script>
 ```
 
-If you use ES modules, you may import the potprox module from the [potprox.min.mjs](dist/potprox.min.mjs) file.
+If you use ES modules, you may import the potprox module from the [potprox.min.mjs](dist/potprox.min.mjs) file:
 
 ```javascript
-import potprox from "./dist/potprox.min.mjs";
+import * as potprox from "./dist/potprox.min.mjs";
+```
+
+Importing only those potential classes you really need will allow module bundlers to perform “tree shaking” and exclude the rest unused code.
+
+```javascript
+import {Morse, Rydberg} from "./dist/potprox.min.mjs";
 ```
 
 **Web workers:**
@@ -170,6 +180,10 @@ All the classes in the `potprox` object have a few members listed below.
 
 The *static* read-only property containing the name of the potential class (e.g. `"LennardJones"`, `"Morse"`, `"Buckingham"` etc.).
 
+```javascript
+console.log(potprox.LennardJones.type); // => "LennardJones"
+```
+
 #### `from(data [, settings])`
 
 The *static* method `from` creates an instance of the specific class with potential parameters obtained via the least squares approximation procedure.
@@ -206,6 +220,50 @@ let varshni = new potprox.Varshni3({d0: 0.0368, r0: 5.389, b: 0.0597});
 console.log(varshni.at(6.0)); // => -0.03069928686072358
 ```
 
+#### `points([options])`
+
+The method `points` can be used to generate points of a potential function in the given distance range. The method takes one optional argument and returns a [Generator object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) which you may iterate over. The optional parameter of the method is the configuration object. The following configuration options are available (each of them is optional):
+
+* `start` — starting interatomic distance to generate points from (by default it’s set to a half of the equilibrium distance);
+* `end` — end interatomic distance where to stop (by default it’s double of the equilibrium distance);
+* `step` — step for point generation (default step is configured to generate 50 points).
+
+```javascript
+let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
+
+// Generate 50 points starting from r = r0/2 and finishing at r = 2*r0
+for (let {r, e, index} of morse.points()) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
+}
+
+// Generate 30 points in the user-defined distance range
+let start = 5.0;
+let end = 8.5;
+let pointCount = 30;
+let step = (end - start) / (pointCount - 1);
+for (let {r, e, index} of morse.points({start, end, step})) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
+}
+
+// Generate points infinitely until the given energy threshold is reached
+for (let {r, e, index} of morse.points({start: 5.0, end: Infinity, step: 0.1})) {
+    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(5)} eV`);
+    if (e > -0.001) {
+        break;
+    }
+}
+```
+
+#### `rSqr(data)`
+
+Use the method `rSqr` to calculate the [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) _R²_, a measure of goodness of fit. The method takes the initial data array as an argument (same as that passed to the [`from` method](#fromdata--settings)).
+
+```javascript
+let morse = potprox.Morse.from(data);
+let rSqr = morse.rSqr(data);
+console.log(`Coefficient of determination = ${rSqr}`);
+```
+
 #### `toJSON()`
 
 Returns an object containing information on the potential. This information is enough to restore the potential instance form a serializable JSON object (see the [Tips](#tips) section for details).
@@ -228,54 +286,6 @@ console.log(varshni.toJSON()); // => {type: "Varshni3", d0: 0.0368, r0: 5.389, b
 ```
 
 Note that the potential parameters are also available as direct instance properties, and you may change them at any time.
-
-### Extras
-
-Some additional/helper/extra functionality implemented in the potprox module is available through the `potprox.utils` object. Currently, this functionality includes the following:
-
-#### `potprox.utils.rSqr(data, potential)`
-
-Use the method `potprox.utils.rSqr()` to calculate the [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) _R²_, a measure of goodness of fit. The method takes two arguments: the initial data array (same as that passed to the [`from` method](#fromdata--settings)), and the approximating potential instance.
-
-```javascript
-let morse = potprox.Morse.from(data);
-let rSqr = potprox.utils.rSqr(data, morse);
-console.log(`Coefficient of determination = ${rSqr}`);
-```
-
-#### `potprox.utils.points(potential [, options])`
-
-The method `potprox.utils.points()` can be used to generate points of a potential function in the given distance range. The method can take one or two arguments and returns a [Generator object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) which you may iterate over. The first parameter of the method is the approximating potential instance, and the second one (optional) is the configuration object. The following configuration options are available (each of them is optional):
-
-* `start` — starting interatomic distance to generate points from (by default it’s set to a half of the equilibrium distance);
-* `end` — end interatomic distance where to stop (by default it’s double of the equilibrium distance);
-* `step` — step for point generation (default step is configured to generate 50 points).
-
-```javascript
-let morse = new potprox.Morse({d0: 0.0368, r0: 5.316, a: 0.867});
-
-// Generate 50 points starting from r = r0/2 and finishing at r = 2*r0
-for (let {r, e, index} of potprox.utils.points(morse)) {
-    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
-}
-
-// Generate 30 points in the user-defined distance range
-let start = 5.0;
-let end = 8.5;
-let pointCount = 30;
-let step = (end - start) / (pointCount - 1);
-for (let {r, e, index} of potprox.utils.points(morse, {start, end, step})) {
-    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(3)} eV`);
-}
-
-// Generate points infinitely until the given energy threshold is reached
-for (let {r, e, index} of potprox.utils.points(morse, {start: 5.0, end: Infinity, step: 0.1})) {
-    console.log(`${index + 1}. r = ${r.toFixed(4)} nm; E = ${e.toFixed(5)} eV`);
-    if (e > -0.001) {
-        break;
-    }
-}
-```
 
 ## Tips
 

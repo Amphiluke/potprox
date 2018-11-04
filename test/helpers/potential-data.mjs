@@ -1,4 +1,4 @@
-import potprox from "../../dist/potprox.mjs";
+import * as potprox from "../../dist/potprox.mjs";
 
 let potentialData = new Map();
 

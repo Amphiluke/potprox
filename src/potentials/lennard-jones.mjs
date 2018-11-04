@@ -1,7 +1,11 @@
+import AbstractProto from "./abstract-proto.mjs";
+import * as msg from "../messages.mjs";
+
 let instanceData = new WeakMap();
 
-class LennardJones {
+class LennardJones extends AbstractProto {
     constructor({epsilon = 1, sigma = 1} = {}) {
+        super();
         instanceData.set(this, {});
         this.epsilon = epsilon;
         this.sigma = sigma;
@@ -26,10 +30,10 @@ class LennardJones {
      */
     static from(data) {
         if (!Array.isArray(data)) {
-            throw new TypeError("Approximated data should be an array of points");
+            throw new TypeError(msg.arrExpected);
         }
         if (data.length < 3) {
-            throw new Error("Too little points. Approximation is impossible");
+            throw new Error(msg.lackOfData);
         }
         let c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0;
         for (let {r, e} of data) {
@@ -51,10 +55,10 @@ class LennardJones {
     }
     set epsilon(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'epsilon' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("epsilon"));
         }
         if (value <= 0) {
-            throw new RangeError("The 'epsilon' parameter should be greater than zero");
+            throw new RangeError(msg.greaterThan("epsilon"));
         }
         instanceData.get(this).epsilon = value;
     }
@@ -64,10 +68,10 @@ class LennardJones {
     }
     set sigma(value) {
         if (!Number.isFinite(value)) {
-            throw new TypeError("The 'sigma' parameter should be a finite number");
+            throw new TypeError(msg.numExpected("sigma"));
         }
         if (value <= 0) {
-            throw new RangeError("The 'sigma' parameter should be greater than zero");
+            throw new RangeError(msg.greaterThan("sigma"));
         }
         instanceData.get(this).sigma = value;
     }
@@ -86,10 +90,10 @@ class LennardJones {
      */
     at(r) {
         if (typeof r !== "number") {
-            throw new TypeError("Distance should be a number");
+            throw new TypeError(msg.distType);
         }
         if (r < 0) {
-            throw new RangeError("Distance shouldn't be less than zero");
+            throw new RangeError(msg.distRange);
         }
         let {epsilon, sigma} = this;
         return 4 * epsilon * (Math.pow(sigma / r, 12) - Math.pow(sigma / r, 6));
