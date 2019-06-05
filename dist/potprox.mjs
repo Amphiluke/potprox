@@ -1,5 +1,5 @@
 /*!
-potprox v0.7.0
+potprox v0.7.1
 https://amphiluke.github.io/potprox/
 */
 class AbstractProto {
@@ -905,4 +905,4 @@ class Varshni3 extends AbstractProto {
     }
 }
 
-export { LennardJones, Buckingham, Morse, Rydberg, Varshni3 };
+export { Buckingham, LennardJones, Morse, Rydberg, Varshni3 };

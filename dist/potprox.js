@@ -1,12 +1,12 @@
 /*!
-potprox v0.7.0
+potprox v0.7.1
 https://amphiluke.github.io/potprox/
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (factory((global.potprox = {})));
-}(this, (function (exports) { 'use strict';
+    (global = global || self, factory(global.potprox = {}));
+}(this, function (exports) { 'use strict';
 
     class AbstractProto {
         /**
@@ -911,12 +911,12 @@ https://amphiluke.github.io/potprox/
         }
     }
 
-    exports.LennardJones = LennardJones;
     exports.Buckingham = Buckingham;
+    exports.LennardJones = LennardJones;
     exports.Morse = Morse;
     exports.Rydberg = Rydberg;
     exports.Varshni3 = Varshni3;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));
