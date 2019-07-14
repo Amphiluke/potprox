@@ -28,11 +28,11 @@
   },
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
-    "ava": "^2.0.0",
-    "eslint": "^5.16.0",
-    "husky": "^2.3.0",
-    "rollup": "^1.13.1",
-    "rollup-plugin-terser": "^5.0.0"
+    "ava": "^2.2.0",
+    "eslint": "^6.0.1",
+    "husky": "^3.0.0",
+    "rollup": "^1.16.7",
+    "rollup-plugin-terser": "^5.1.1"
   },
   "husky": {
     "hooks": {
