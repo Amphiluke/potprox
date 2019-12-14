@@ -1,5 +1,5 @@
 /*!
-potprox v0.7.1
+potprox v0.7.2
 https://amphiluke.github.io/potprox/
 */
 (function (global, factory) {
