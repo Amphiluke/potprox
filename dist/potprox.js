@@ -6,7 +6,7 @@ https://amphiluke.github.io/potprox/
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
     (global = global || self, factory(global.potprox = {}));
-}(this, function (exports) { 'use strict';
+}(this, (function (exports) { 'use strict';
 
     class AbstractProto {
         /**
@@ -919,4 +919,4 @@ https://amphiluke.github.io/potprox/
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));
