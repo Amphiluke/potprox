@@ -1,12 +1,13 @@
 {
   "name": "potprox-site",
-  "version": "0.5.1",
+  "version": "0.7.2",
   "description": "GitHub web page for the potprox project",
   "main": "index.js",
   "scripts": {
     "copyDependencies": "copyfiles -f ./node_modules/chart.js/dist/Chart.min.js ./node_modules/potprox/dist/potprox.min.js js/vendor",
-    "lint": "eslint js/**/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "terser js/main.js -c -m -o js/main.min.js && lessc css/main.less | cleancss --skip-rebase -O2 -o css/main.css"
   },
   "repository": {
     "type": "git",
@@ -20,16 +21,17 @@
   "bugs": {
     "url": "https://github.com/Amphiluke/potprox/issues"
   },
-  "homepage": "https://github.com/Amphiluke/potprox#readme",
+  "homepage": "https://amphiluke.github.io/potprox/",
   "dependencies": {
-    "chart.js": "^2.7.3",
-    "normalize.css": "^8.0.0",
-    "potprox": "^0.7.0"
+    "chart.js": "^2.9.3",
+    "normalize.css": "^8.0.1",
+    "potprox": "^0.7.2"
   },
   "devDependencies": {
-    "copyfiles": "^2.1.0",
-    "eslint": "^5.8.0",
-    "less": "^3.8.1",
-    "less-plugin-clean-css": "^1.5.1"
+    "clean-css-cli": "^4.3.0",
+    "copyfiles": "^2.1.1",
+    "eslint": "^6.7.2",
+    "less": "^3.10.3",
+    "terser": "^4.4.2"
   }
 }
