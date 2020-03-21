@@ -1,12 +1,12 @@
 import test from "ava";
 import * as potprox from "../../dist/potprox.mjs";
-import potentialData from "../helpers/potential-data";
-import utils from "../helpers/utils";
+import potentialData from "../helpers/potential-data.mjs";
+import utils from "../helpers/utils.mjs";
 
 test("Every potential class has static read-only property `type`", t => {
     Object.values(potprox).forEach(PotentialClass => {
         t.true(typeof PotentialClass.type === "string");
-        t.throws(() => PotentialClass.type = "", TypeError);
+        t.throws(() => PotentialClass.type = "", {instanceOf: TypeError});
     });
 });
 
