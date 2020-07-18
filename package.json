@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "clean-css-cli": "^4.3.0",
-    "copyfiles": "^2.1.1",
-    "eslint": "^6.7.2",
-    "less": "^3.10.3",
-    "terser": "^4.4.2"
+    "copyfiles": "^2.3.0",
+    "eslint": "^7.4.0",
+    "less": "^3.12.2",
+    "terser": "^4.8.0"
   }
 }
