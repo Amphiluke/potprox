@@ -1,9 +1,4 @@
-(function (global) {
-    "use strict";
-
-    let Chart = global.Chart,
-        potprox = global.potprox;
-
+{
     let utils = {
         readFile(file) {
             return new Promise((resolve, reject) => {
@@ -22,12 +17,10 @@
             if (delimiter !== ",") {
                 csv = csv.replace(/,/g, "."); // make sure that decimal separator is "."
             }
-            let data = [];
-            for (let line of csv.split(/(?:\r?\n)+/)) {
+            return csv.split(/(?:\r?\n)+/).map(line => {
                 let [x, y] = line.split(delimiter).map(Number);
-                data.push({x, y});
-            }
-            return data;
+                return {x, y};
+            });
         },
 
         winbondToCSV(kul, sum1, sum2) {
@@ -63,7 +56,7 @@
 
         approximate(data, potentialType) {
             let potproxData = this.toPotprox(data);
-            let potential = potprox[potentialType].from(potproxData);
+            let potential = window.potprox[potentialType].from(potproxData);
             potential._rSqr = potential.rSqr(potproxData);
             return potential;
         },
@@ -130,7 +123,7 @@
         createChart(ctx, userData, potentialData) {
             this.config.data.datasets[0].data = userData;
             this.config.data.datasets[1].data = potentialData;
-            this.chart = new Chart(ctx, this.config);
+            this.chart = new window.Chart(ctx, this.config);
         },
 
         update(userData, potentialData) {
@@ -272,4 +265,8 @@
     };
 
     uiCtrl.init();
-})(this);
+
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/potprox/sw.js");
+    }
+}

@@ -1,0 +1,22 @@
+<svg version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+ <rect width="512" height="512" fill="#013813"/>
+ <g id="icon" fill-rule="evenodd">
+  <g id="grid" fill="#fff" opacity=".15">
+   <g id="vertical" transform="translate(48)">
+    <rect x="200" width="16" height="512"/>
+    <rect x="100" width="16" height="512"/>
+    <rect width="16" height="512"/>
+    <rect x="300" width="16" height="512"/>
+    <rect x="400" width="16" height="512"/>
+   </g>
+   <g id="horizontal" transform="translate(256 256) rotate(90) translate(-208 -256)">
+    <rect x="200" width="16" height="512"/>
+    <rect x="100" width="16" height="512"/>
+    <rect width="16" height="512"/>
+    <rect x="300" width="16" height="512"/>
+    <rect x="400" width="16" height="512"/>
+   </g>
+  </g>
+  <path id="potential" d="m39.2 0.1261c13.51 103.3 24.8 256 45.18 339.4 20.37 83.36 30.89 110.5 54.71 110.5 23.83 0 57.4-57.38 92.22-87.12 34.83-29.74 48.21-42 119.1-68.97s132.3-35.5 150.6-37.74h-481c-0.01407-73.81-0.9011-226.9-0.3903-256 20.32-0.04036 19.59-0.04277 19.59-0.04277z" fill="#f9df08"/>
+ </g>
+</svg>

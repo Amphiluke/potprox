@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <circle id="path-1" cx="256" cy="256" r="236"/>
+    </defs>
+    <g id="icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"/>
+        </mask>
+        <use id="circle" fill="#013813" xlink:href="#path-1"/>
+        <g id="grid" opacity="0.15" mask="url(#mask-2)" fill="#FFFFFF">
+            <g id="vertical" transform="translate(48.000000, 0.000000)">
+                <rect id="rule-10" x="200" y="0" width="16" height="512"/>
+                <rect id="rule-9" x="100" y="0" width="16" height="512"/>
+                <rect id="rule-8" x="0" y="0" width="16" height="512"/>
+                <rect id="rule-7" x="300" y="0" width="16" height="512"/>
+                <rect id="rule-6" x="400" y="0" width="16" height="512"/>
+            </g>
+            <g id="horizontal" transform="translate(256.000000, 256.000000) rotate(90.000000) translate(-256.000000, -256.000000) translate(48.000000, 0.000000)">
+                <rect id="rule-5" x="200" y="0" width="16" height="512"/>
+                <rect id="rule-4" x="100" y="0" width="16" height="512"/>
+                <rect id="rule-3" x="0" y="0" width="16" height="512"/>
+                <rect id="rule-2" x="300" y="0" width="16" height="512"/>
+                <rect id="rule-1" x="400" y="0" width="16" height="512"/>
+            </g>
+        </g>
+        <path d="M48,79.6640625 C71.7313376,183.591032 64,256.175416 84.3738363,339.540369 C104.747673,422.905322 115.263142,450.00266 139.088657,450.00266 C162.914172,450.00266 196.484476,392.619088 231.310451,362.881284 C266.136425,333.143481 279.515574,320.883877 350.445621,293.914021 C421.375669,266.944165 482.762415,258.409546 501,256.175416 C180.333333,256.175416 20,256.175416 20,256.175416 C15.5898185,138.50118 24.9231518,79.6640625 48,79.6640625 Z" id="potential" fill="#F9DF08" mask="url(#mask-2)"/>
+    </g>
+</svg>

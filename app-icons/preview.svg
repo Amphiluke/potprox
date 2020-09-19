@@ -1,0 +1,30 @@
+<svg version="1.1" viewBox="0 0 1146 600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1146" height="600">
+ <defs>
+  <circle id="path-1" cx="256" cy="256" r="236"/>
+ </defs>
+ <rect width="1146" height="600" fill="#013813"/>
+ <circle cx="573" cy="300" r="250" fill="#fff" fill-opacity=".15" stroke-width="3.886"/>
+ <g id="icon" transform="translate(317,44)" fill-rule="evenodd">
+  <mask id="mask-2" fill="#ffffff">
+   <use width="100%" height="100%" xlink:href="#path-1"/>
+  </mask>
+  <use id="circle" width="100%" height="100%" fill="#013813" xlink:href="#path-1"/>
+  <g id="grid" fill="#fff" mask="url(#mask-2)" opacity=".15">
+   <g id="vertical" transform="translate(48)">
+    <rect x="200" width="16" height="512"/>
+    <rect x="100" width="16" height="512"/>
+    <rect width="16" height="512"/>
+    <rect x="300" width="16" height="512"/>
+    <rect x="400" width="16" height="512"/>
+   </g>
+   <g id="horizontal" transform="rotate(90,232,280)">
+    <rect x="200" width="16" height="512"/>
+    <rect x="100" width="16" height="512"/>
+    <rect width="16" height="512"/>
+    <rect x="300" width="16" height="512"/>
+    <rect x="400" width="16" height="512"/>
+   </g>
+  </g>
+  <path id="potential" d="m48 79.66c23.73 103.9 16 176.5 36.37 259.9 20.37 83.36 30.89 110.5 54.71 110.5 23.83 0 57.4-57.38 92.22-87.12 34.83-29.74 48.21-42 119.1-68.97s132.3-35.5 150.6-37.74h-481c-4.41-117.7 4.923-176.5 28-176.5z" fill="#f9df08" mask="url(#mask-2)"/>
+ </g>
+</svg>

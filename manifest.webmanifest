@@ -1,0 +1,33 @@
+{
+  "name": "potprox",
+  "short_name": "potprox",
+  "description": "Approximation of computed data with empirical pair potentials",
+  "scope": "./",
+  "start_url": "index.html",
+  "icons": [
+    {
+      "src": "app-icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "app-icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "app-icons/icon-48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "app-icons/maskable-icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "background_color": "#013813",
+  "theme_color": "#013813",
+  "display": "standalone"
+}
