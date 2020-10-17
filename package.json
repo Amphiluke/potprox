@@ -1,6 +1,6 @@
 {
   "name": "potprox-site",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GitHub web page for the potprox project",
   "main": "index.js",
   "scripts": {
@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "clean-css-cli": "^4.3.0",
-    "copyfiles": "^2.3.0",
-    "eslint": "^7.9.0",
+    "copyfiles": "^2.4.0",
+    "eslint": "^7.11.0",
     "less": "^3.12.2",
-    "terser": "^5.3.2"
+    "terser": "^5.3.5"
   }
 }
