@@ -22,7 +22,7 @@
 <body>
 
 <main>
-    <h1>potprox — Potential Approximation</h1>
+    <h1>potprox &middot; Potential Approximation</h1>
 
     <form action="#" autocomplete="off" id="ctrl-form">
         <fieldset class="input-group">
@@ -110,7 +110,7 @@
         </fieldset>
 
         <fieldset class="result-group" id="result-group">
-            <legend>&#x2462; Results<span title="Parameters were modified manually">✋</span></legend>
+            <legend>&#x2462; Results<span title="Parameters were modified manually">&#x26A0;</span></legend>
             <button type="submit">Recalculate</button>
             <div class="result hidden" data-potential="LennardJones">
                 <label><var>ε</var><input type="text" name="epsilon" placeholder="N/A"></label>
@@ -155,17 +155,6 @@
     <a href="https://github.com/Amphiluke/potprox" target="_blank">potprox on GitHub</a>
 </footer>
 
-<div id="legacy-warning" class="legacy-warning hidden">
-    Unfortunately, your browser doesn't support ECMAScript 6. To proceed working with potprox, please use the latest versions of such browsers as Chrome, Firefox, Edge, Safari, or Opera.
-</div>
-<script>
-    if (typeof window.Promise === "undefined") {
-        document.getElementById("legacy-warning").classList.remove("hidden");
-    }
-</script>
-
-<script src="js/vendor/Chart.min.js"></script>
-<script src="js/vendor/potprox.min.js"></script>
-<script src="js/main.min.js"></script>
+<script type="module" src="js/main.min.js"></script>
 </body>
 </html>
