@@ -13,11 +13,12 @@ export function parseCSV(csv) {
 }
 
 export function winbondToCSV(kul, sum1, sum2) {
+    const WINBOND_DATA_ERROR = "Winbond files contain mismatched or corrupted data";
     let kulLines = kul.trim().split(/\r?\n/);
     let sum1Lines = sum1.trim().split(/\r?\n/);
     let sum2Lines = sum2.trim().split(/\r?\n/);
     if (kulLines.length !== sum1Lines.length || kulLines.length !== sum2Lines.length) {
-        throw new Error("Winbond files contain mismatched or corrupted data");
+        throw new Error(WINBOND_DATA_ERROR);
     }
     let splitRE = /\s+/;
     let csvLines = kulLines.map((kulLine, lineIndex) => {
@@ -26,12 +27,12 @@ export function winbondToCSV(kul, sum1, sum2) {
         let energy = Number(columns[1]);
         columns = sum1Lines[lineIndex].trim().split(splitRE);
         if (Number(columns[0]) !== distance) {
-            throw new Error("Winbond files contain mismatched or corrupted data");
+            throw new Error(WINBOND_DATA_ERROR);
         }
         energy += Number(columns[columns.length - 1]);
         columns = sum2Lines[lineIndex].trim().split(splitRE);
         if (Number(columns[0]) !== distance) {
-            throw new Error("Winbond files contain mismatched or corrupted data");
+            throw new Error(WINBOND_DATA_ERROR);
         }
         energy += Number(columns[columns.length - 1]);
         return `${distance},${energy.toFixed(8)}`; // sum files contain energy output with 8 decimal digits

@@ -31,12 +31,14 @@
                 <div class="ctrl">
                     Select files containing the data for approximation
                     <div class="tab-ctrl" id="file-tab-ctrl">
-                        <span class="tab tab-active" data-format="csv">CSV</span>
-                        <span class="tab" data-format="winbond">Winbond</span>
+                        <input type="radio" name="format" id="format-csv" value="csv" checked>
+                        <label for="format-csv" class="tab">CSV</label>
+                        <input type="radio" name="format" id="format-winbond" value="winbond">
+                        <label for="format-winbond" class="tab">Winbond</label>
                         <div class="tab-sheet" data-format="csv">
                             <label data-format-label="CSV"><input type="file" id="file-csv" accept=".csv"></label>
                         </div>
-                        <div class="tab-sheet hidden" data-format="winbond">
+                        <div class="tab-sheet" data-format="winbond">
                             <label data-format-label="KUL"><input type="file" id="file-kul"></label>
                             <label data-format-label="SUM"><input type="file" id="file-sum1"></label>
                             <label data-format-label="SUM"><input type="file" id="file-sum2"></label>
