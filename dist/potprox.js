@@ -65,12 +65,12 @@ https://amphiluke.github.io/potprox/
 
     const distRange = "Distance mustn’t be less than 0";
 
-    let instanceData = new WeakMap();
+    let instanceData$4 = new WeakMap();
 
     class LennardJones extends AbstractProto {
         constructor({epsilon = 1, sigma = 1} = {}) {
             super();
-            instanceData.set(this, {});
+            instanceData$4.set(this, {});
             this.epsilon = epsilon;
             this.sigma = sigma;
         }
@@ -115,7 +115,7 @@ https://amphiluke.github.io/potprox/
         }
 
         get epsilon() {
-            return instanceData.get(this).epsilon;
+            return instanceData$4.get(this).epsilon;
         }
         set epsilon(value) {
             if (!Number.isFinite(value)) {
@@ -124,11 +124,11 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("epsilon"));
             }
-            instanceData.get(this).epsilon = value;
+            instanceData$4.get(this).epsilon = value;
         }
 
         get sigma() {
-            return instanceData.get(this).sigma;
+            return instanceData$4.get(this).sigma;
         }
         set sigma(value) {
             if (!Number.isFinite(value)) {
@@ -137,7 +137,7 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("sigma"));
             }
-            instanceData.get(this).sigma = value;
+            instanceData$4.get(this).sigma = value;
         }
 
         get r0() {
@@ -168,12 +168,12 @@ https://amphiluke.github.io/potprox/
         }
     }
 
-    let instanceData$1 = new WeakMap();
+    let instanceData$3 = new WeakMap();
 
     class Buckingham extends AbstractProto {
         constructor({d0 = 1, r0 = 1, a = 2} = {}) {
             super();
-            instanceData$1.set(this, {});
+            instanceData$3.set(this, {});
             this.d0 = d0;
             this.r0 = r0;
             this.a = a;
@@ -299,7 +299,7 @@ https://amphiluke.github.io/potprox/
         }
 
         get d0() {
-            return instanceData$1.get(this).d0;
+            return instanceData$3.get(this).d0;
         }
         set d0(value) {
             if (!Number.isFinite(value)) {
@@ -308,11 +308,11 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("d0"));
             }
-            instanceData$1.get(this).d0 = value;
+            instanceData$3.get(this).d0 = value;
         }
 
         get r0() {
-            return instanceData$1.get(this).r0;
+            return instanceData$3.get(this).r0;
         }
         set r0(value) {
             if (!Number.isFinite(value)) {
@@ -321,11 +321,11 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("r0"));
             }
-            instanceData$1.get(this).r0 = value;
+            instanceData$3.get(this).r0 = value;
         }
 
         get a() {
-            return instanceData$1.get(this).a;
+            return instanceData$3.get(this).a;
         }
         set a(value) {
             if (!Number.isFinite(value)) {
@@ -334,7 +334,7 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("a"));
             }
-            instanceData$1.get(this).a = value;
+            instanceData$3.get(this).a = value;
         }
 
         /**
@@ -542,12 +542,12 @@ https://amphiluke.github.io/potprox/
         }
     }
 
-    let instanceData$3 = new WeakMap();
+    let instanceData$1 = new WeakMap();
 
     class Rydberg extends AbstractProto {
         constructor({d0 = 1, r0 = 1, b = 2} = {}) {
             super();
-            instanceData$3.set(this, {});
+            instanceData$1.set(this, {});
             this.d0 = d0;
             this.r0 = r0;
             this.b = b;
@@ -667,7 +667,7 @@ https://amphiluke.github.io/potprox/
         }
 
         get d0() {
-            return instanceData$3.get(this).d0;
+            return instanceData$1.get(this).d0;
         }
         set d0(value) {
             if (!Number.isFinite(value)) {
@@ -676,11 +676,11 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("d0"));
             }
-            instanceData$3.get(this).d0 = value;
+            instanceData$1.get(this).d0 = value;
         }
 
         get r0() {
-            return instanceData$3.get(this).r0;
+            return instanceData$1.get(this).r0;
         }
         set r0(value) {
             if (!Number.isFinite(value)) {
@@ -689,11 +689,11 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("r0"));
             }
-            instanceData$3.get(this).r0 = value;
+            instanceData$1.get(this).r0 = value;
         }
 
         get b() {
-            return instanceData$3.get(this).b;
+            return instanceData$1.get(this).b;
         }
         set b(value) {
             if (!Number.isFinite(value)) {
@@ -702,7 +702,7 @@ https://amphiluke.github.io/potprox/
             if (value <= 1) {
                 throw new RangeError(greaterThan("b", 1));
             }
-            instanceData$3.get(this).b = value;
+            instanceData$1.get(this).b = value;
         }
 
         /**
@@ -727,12 +727,12 @@ https://amphiluke.github.io/potprox/
         }
     }
 
-    let instanceData$4 = new WeakMap();
+    let instanceData = new WeakMap();
 
     class Varshni3 extends AbstractProto {
         constructor({d0 = 1, r0 = 1, b = 1} = {}) {
             super();
-            instanceData$4.set(this, {});
+            instanceData.set(this, {});
             this.d0 = d0;
             this.r0 = r0;
             this.b = b;
@@ -851,7 +851,7 @@ https://amphiluke.github.io/potprox/
         }
 
         get d0() {
-            return instanceData$4.get(this).d0;
+            return instanceData.get(this).d0;
         }
         set d0(value) {
             if (!Number.isFinite(value)) {
@@ -860,11 +860,11 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("d0"));
             }
-            instanceData$4.get(this).d0 = value;
+            instanceData.get(this).d0 = value;
         }
 
         get r0() {
-            return instanceData$4.get(this).r0;
+            return instanceData.get(this).r0;
         }
         set r0(value) {
             if (!Number.isFinite(value)) {
@@ -873,11 +873,11 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("r0"));
             }
-            instanceData$4.get(this).r0 = value;
+            instanceData.get(this).r0 = value;
         }
 
         get b() {
-            return instanceData$4.get(this).b;
+            return instanceData.get(this).b;
         }
         set b(value) {
             if (!Number.isFinite(value)) {
@@ -886,7 +886,7 @@ https://amphiluke.github.io/potprox/
             if (value <= 0) {
                 throw new RangeError(greaterThan("b"));
             }
-            instanceData$4.get(this).b = value;
+            instanceData.get(this).b = value;
         }
 
         /**
