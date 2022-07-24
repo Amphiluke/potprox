@@ -1,4 +1,4 @@
-[![Build and test](https://github.com/Amphiluke/potprox/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Amphiluke/potprox/actions/workflows/build-and-test.yml)
+[![Build and test](https://github.com/Amphiluke/potprox/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/Amphiluke/potprox/actions/workflows/build-and-test.yml)
 
 # potprox
 
