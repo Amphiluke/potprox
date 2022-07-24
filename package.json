@@ -10,6 +10,7 @@
     "test": "ava",
     "build": "rollup -c"
   },
+  "files": ["dist", "src"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Amphiluke/potprox.git"
