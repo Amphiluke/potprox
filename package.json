@@ -7,10 +7,13 @@
   "scripts": {
     "prepare": "husky install",
     "lint": "eslint src/**/*.mjs test/**/*.mjs",
-    "test": "ava",
+    "test": "node --test test/potprox.test.mjs test/potentials/",
     "build": "rollup -c"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Amphiluke/potprox.git"
@@ -30,7 +33,6 @@
   },
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
-    "ava": "^4.3.1",
     "eslint": "^8.20.0",
     "husky": "^8.0.1",
     "rollup": "^2.77.0",
