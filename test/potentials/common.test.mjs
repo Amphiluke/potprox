@@ -1,71 +1,72 @@
-import test from "ava";
+import test from "node:test";
+import assert from "node:assert/strict";
 import * as potprox from "../../dist/potprox.mjs";
 import potentialData from "../helpers/potential-data.mjs";
 import utils from "../helpers/utils.mjs";
 
-test("Every potential class has static read-only property `type`", t => {
+test("Every potential class has static read-only property `type`", () => {
     Object.values(potprox).forEach(PotentialClass => {
-        t.true(typeof PotentialClass.type === "string");
-        t.throws(() => PotentialClass.type = "", {instanceOf: TypeError});
+        assert.ok(typeof PotentialClass.type === "string");
+        assert.throws(() => PotentialClass.type = "", TypeError);
     });
 });
 
-test("Every potential class has static method property `from`", t => {
+test("Every potential class has static method property `from`", () => {
     Object.values(potprox).forEach(PotentialClass => {
-        t.true(typeof PotentialClass.from === "function");
+        assert.ok(typeof PotentialClass.from === "function");
     });
 });
 
-test("Every potential class has method `at`", t => {
+test("Every potential class has method `at`", () => {
     Object.values(potprox).forEach(PotentialClass => {
-        t.true(typeof PotentialClass.prototype.at === "function");
+        assert.ok(typeof PotentialClass.prototype.at === "function");
     });
 });
 
-test("Every potential class has method `toJSON`", t => {
+test("Every potential class has method `toJSON`", () => {
     Object.values(potprox).forEach(PotentialClass => {
-        t.true(typeof PotentialClass.prototype.toJSON === "function");
+        assert.ok(typeof PotentialClass.prototype.toJSON === "function");
     });
 });
 
-test("Every potential class provides default potential parameters", t => {
+test("Every potential class provides default potential parameters", () => {
     Object.values(potprox).forEach(PotentialClass => {
-        t.notThrows(() => new PotentialClass());
-        t.notThrows(() => new PotentialClass({}));
+        assert.doesNotThrow(() => new PotentialClass());
+        assert.doesNotThrow(() => new PotentialClass({}));
         let potentialData = new PotentialClass({}).toJSON();
-        t.true(Object.values(potentialData).every(value => value !== undefined));
+        assert.ok(Object.values(potentialData).every(value => value !== undefined));
     });
 });
 
-test("Every potential instance is JSON-serializable", t => {
+test("Every potential instance is JSON-serializable", () => {
     Object.values(potprox).forEach(PotentialClass => {
         let potentialInstance = new PotentialClass();
         let json = JSON.stringify(potentialInstance);
         let potentialInstanceCopy = new PotentialClass(JSON.parse(json));
-        t.deepEqual(potentialInstance.toJSON(), potentialInstanceCopy.toJSON());
+        assert.deepStrictEqual(potentialInstance.toJSON(), potentialInstanceCopy.toJSON());
     });
 });
 
-test("Check `rSqr` for test potential data", t => {
+test("Check `rSqr` for test potential data", () => {
     let data = potentialData.get("ab initio").data;
     Object.values(potprox).forEach(PotentialClass => {
         let potential = PotentialClass.from(data);
         let rSqr = potential.rSqr(data, potential);
-        t.is(typeof rSqr, "number");
-        t.true(rSqr > 0.98 && rSqr <= 1.0);
+        assert.strictEqual(typeof rSqr, "number");
+        assert.ok(rSqr > 0.98 && rSqr <= 1.0);
     });
 });
 
-test("`rSqr` is equal to 1 for perfectly fitted data", t => {
+test("`rSqr` is equal to 1 for perfectly fitted data", () => {
     potentialData.forEach((data, type) => {
         if (data.params) {
             let rSqr = new potprox[type](data.params).rSqr(data.data);
-            t.true(utils.equal(rSqr, 1));
+            assert.ok(utils.equal(rSqr, 1));
         }
     });
 });
 
-test("`points` generates expected number of points in the given range", t => {
+test("`points` generates expected number of points in the given range", () => {
     Object.values(potprox).forEach(PotentialClass => {
         let potential = new PotentialClass();
         let start = potential.r0 / 3;
@@ -73,14 +74,14 @@ test("`points` generates expected number of points in the given range", t => {
         let count = 15;
         let step = (end - start) / (count - 1);
         let points = [...potential.points({start, end, step})];
-        t.is(points.length, count);
-        t.is(points[0].r, start);
-        t.is(points[points.length - 1].r, end);
-        t.true(points.every(point => point.r >= start && point.r <= end));
+        assert.strictEqual(points.length, count);
+        assert.strictEqual(points[0].r, start);
+        assert.strictEqual(points[points.length - 1].r, end);
+        assert.ok(points.every(point => point.r >= start && point.r <= end));
     });
 });
 
-test("`points` generates correct data", t => {
+test("`points` generates correct data", () => {
     Object.values(potprox).forEach(PotentialClass => {
         let potential = new PotentialClass();
         let start = potential.r0 * 2;
@@ -89,9 +90,9 @@ test("`points` generates correct data", t => {
         let step = (end - start) / (count - 1);
         let i = 0;
         for (let {r, e, index} of potential.points({start, end, step})) {
-            t.is(index, i);
-            t.is(r, start + step * i);
-            t.is(e, potential.at(r));
+            assert.strictEqual(index, i);
+            assert.strictEqual(r, start + step * i);
+            assert.strictEqual(e, potential.at(r));
             i++;
         }
     });

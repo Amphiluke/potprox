@@ -1,5 +1,5 @@
-import {terser} from "rollup-plugin-terser";
-import pkg from "./package.json";
+import terser from "@rollup/plugin-terser";
+import pkg from "./package.json" assert {type: "json"};
 
 function getConfig({format = "umd", minify = false} = {}) {
     let config = {
@@ -15,7 +15,6 @@ function getConfig({format = "umd", minify = false} = {}) {
         config.plugins = [
             terser({
                 output: {comments: /^!/},
-                module: format === "es"
             })
         ];
     }
