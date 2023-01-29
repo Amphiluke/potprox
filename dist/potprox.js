@@ -917,6 +917,4 @@ https://amphiluke.github.io/potprox/
     exports.Rydberg = Rydberg;
     exports.Varshni3 = Varshni3;
 
-    Object.defineProperty(exports, '__esModule', { value: true });
-
 }));
