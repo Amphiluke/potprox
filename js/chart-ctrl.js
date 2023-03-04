@@ -1,17 +1,15 @@
-import {Chart, LineController, Line, LinearScale, Point} from "chart.js";
+import {Chart, LineController, LineElement, LinearScale, PointElement} from "chart.js";
 import {$} from "./dom.js";
 
-Chart.register(LineController, Line, LinearScale, Point);
+Chart.register(LineController, LineElement, LinearScale, PointElement);
 
 let axesConfig = {
     type: "linear",
-    gridLines: {
+    grid: {
         color: "#014c1a"
     },
     ticks: {
-        font: {
-            color: "#c9b405"
-        }
+        color: "#c9b405"
     }
 };
 
@@ -35,6 +33,7 @@ let chartConfig = {
     },
     options: {
         animation: false,
+        maintainAspectRatio: false,
         legend: {
             display: false
         },
@@ -60,7 +59,7 @@ function createChart({userData = [], potentialData = []}) {
     let config = JSON.parse(JSON.stringify(chartConfig));
     config.data.datasets[0].data = userData;
     config.data.datasets[1].data = potentialData;
-    chartInstance = new Chart($("#graph").getContext("2d"), config);
+    chartInstance = new Chart($("#graph"), config);
 }
 
 export function resetChart({userData, potentialData}) {

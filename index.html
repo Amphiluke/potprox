@@ -36,7 +36,7 @@
                         <input type="radio" name="format" id="format-winbond" value="winbond">
                         <label for="format-winbond" class="tab">Winbond</label>
                         <div class="tab-sheet" data-format="csv">
-                            <label data-format-label="CSV"><input type="file" id="file-csv" accept=".csv"></label>
+                            <label data-format-label="CSV"><input type="file" id="file-csv" accept=".csv,text/csv"></label>
                         </div>
                         <div class="tab-sheet" data-format="winbond">
                             <label data-format-label="KUL"><input type="file" id="file-kul"></label>
@@ -147,13 +147,13 @@
 
         <figure class="graph-group">
             <figcaption>&#x2463; Graph</figcaption>
-            <canvas id="graph"></canvas>
+            <div class="graph-container"><canvas id="graph"></canvas></div>
         </figure>
     </form>
 </main>
 
 <footer>
-    © 2020 Amphiluke<br>
+    © 2023 Amphiluke<br>
     <a href="https://github.com/Amphiluke/potprox" target="_blank" rel="noopener">potprox on GitHub</a>
 </footer>
 

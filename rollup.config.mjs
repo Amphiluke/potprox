@@ -1,4 +1,4 @@
-import {terser} from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 import replace from "@rollup/plugin-replace";
 import resolve from "@rollup/plugin-node-resolve";
 
@@ -28,7 +28,8 @@ export default [
         plugins: [
             replace({
                 PACKAGE_VERSION: pkg.version,
-                delimiters: ["{{", "}}"]
+                delimiters: ["{{", "}}"],
+                preventAssignment: true
             }),
             terser()
         ]
