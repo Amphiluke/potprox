@@ -1,6 +1,6 @@
 {
   "name": "potprox-site",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "GitHub web page for the potprox project",
   "main": "index.js",
   "scripts": {
