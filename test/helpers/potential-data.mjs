@@ -40,42 +40,42 @@ potentialData.set("ab initio", {
         {r: 7.7, e: -0.010867186},
         {r: 7.8, e: -0.010091833},
         {r: 7.9, e: -0.009378217},
-        {r: 8.0, e: -0.008721082}
-    ]
+        {r: 8.0, e: -0.008721082},
+    ],
 });
 
 let potentialParams = {
     LennardJones: {
         epsilon: 0.06830448257027043,
-        sigma: 4.572601751994529
+        sigma: 4.572601751994529,
     },
     Buckingham: {
         d0: 0.06716628791443133,
         r0: 5.252617286323438,
-        a: 4.938464977302329
+        a: 4.938464977302329,
     },
     Morse: {
         d0: 0.06845835040507252,
         r0: 5.20478344215002,
-        a: 1.095112794871565
+        a: 1.095112794871565,
     },
     Rydberg: {
         d0: 0.06849683974115128,
         r0: 5.2282343210681,
-        b: 7.9514048075009836
+        b: 7.9514048075009836,
     },
     Varshni3: {
         d0: 0.06858192442230913,
         r0: 5.250064314946983,
-        b: 0.08289544848817255
-    }
+        b: 0.08289544848817255,
+    },
 };
 
 Object.entries(potentialParams).forEach(([type, params]) => {
     let potential = new potprox[type](params);
     potentialData.set(type, {
         data: potentialData.get("ab initio").data.map(({r}) => ({r, e: potential.at(r)})),
-        params: potential.toJSON()
+        params: potential.toJSON(),
     });
 });
 

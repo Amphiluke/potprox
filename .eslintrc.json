@@ -6,7 +6,8 @@
     "node": true
   },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaVersion": 2018
   },
   "extends": "eslint:recommended",
   "rules": {
@@ -26,6 +27,10 @@
     "brace-style": [
       "error",
       "1tbs"
+    ],
+    "comma-dangle": [
+      "error",
+      {"arrays": "always-multiline", "objects": "always-multiline"}
     ],
     "comma-spacing": [
       "error"
@@ -54,7 +59,8 @@
     ],
     "indent": [
       "error",
-      4
+      4,
+      {"SwitchCase": 1}
     ],
     "key-spacing": [
       "error"

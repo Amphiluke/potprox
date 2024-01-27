@@ -1,14 +1,22 @@
 {
   "name": "potprox",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "Approximation of computed data with empirical pair potentials",
-  "main": "dist/potprox.js",
-  "module": "dist/potprox.mjs",
+  "main": "./dist/potprox.js",
+  "module": "./dist/potprox.mjs",
+  "unpkg": "./dist/potprox.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/potprox.mjs",
+      "require": "./dist/potprox.cjs"
+    }
+  },
+  "type": "module",
   "scripts": {
-    "prepare": "husky install",
     "lint": "eslint src/**/*.mjs test/**/*.mjs",
     "test": "node --test test/potprox.test.mjs test/potentials/",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepare": "husky"
   },
   "files": [
     "dist",
@@ -33,9 +41,9 @@
   },
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.3",
-    "eslint": "^8.45.0",
-    "husky": "^8.0.3",
-    "rollup": "^3.26.3"
+    "@rollup/plugin-terser": "^0.4.4",
+    "eslint": "^8.56.0",
+    "husky": "^9.0.6",
+    "rollup": "^4.9.6"
   }
 }

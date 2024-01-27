@@ -2,6 +2,8 @@
 potprox v0.8.0
 https://amphiluke.github.io/potprox/
 */
+'use strict';
+
 class AbstractProto {
     /**
      * Calculate the coefficient of determination to measure the goodness of fit
@@ -905,4 +907,8 @@ class Varshni3 extends AbstractProto {
     }
 }
 
-export { Buckingham, LennardJones, Morse, Rydberg, Varshni3 };
+exports.Buckingham = Buckingham;
+exports.LennardJones = LennardJones;
+exports.Morse = Morse;
+exports.Rydberg = Rydberg;
+exports.Varshni3 = Varshni3;
