@@ -13,10 +13,10 @@
   },
   "type": "module",
   "scripts": {
-    "prepare": "husky install",
     "lint": "eslint src/**/*.mjs test/**/*.mjs",
     "test": "node --test test/potprox.test.mjs test/potentials/",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepare": "husky"
   },
   "files": [
     "dist",
