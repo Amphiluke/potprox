@@ -16,46 +16,52 @@ Potprox uses the [method of least squares](https://en.wikipedia.org/wiki/Least_s
 * [The Rydberg potential](#the-potproxrydberg-class)
 * [The Varshni potential (III)](#the-potproxvarshni3-class)
 
-## Requirements
-
-Use the module in [environments with ES6 support](https://kangax.github.io/compat-table/es6/).
-
 ## Install and load potprox
 
-**As a NodeJS module:**
+### As a Node.js module
 
-```
+Installing the package:
+
+```shell
 npm install potprox
 ```
+
+Importing the module:
+
+```javascript
+import * as potprox from "potprox";
+```
+
+or (for CommonJS modules)
 
 ```javascript
 let potprox = require("potprox");
 ```
 
-The version for browsers (and web workers) is also available: check out the [dist directory](dist).
+If you need only a few potential classes, using named import will allow module bundlers to perform “tree shaking” and exclude the rest unused code.
 
-**Browsers:**
+```javascript
+import {Morse, Rydberg} from "potprox";
+```
+
+### In browsers
+
+The module can be loaded from the popular CDNs like unpkg or jsDelivr.
 
 ```html
-<script src="dist/potprox.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/potprox/dist/potprox.min.js"></script>
 ```
 
 If you use ES modules, you may import the potprox module from the [potprox.min.mjs](dist/potprox.min.mjs) file:
 
 ```javascript
-import * as potprox from "./dist/potprox.min.mjs";
+import * as potprox from "https://cdn.jsdelivr.net/npm/potprox/dist/potprox.min.mjs";
 ```
 
-Importing only those potential classes you really need will allow module bundlers to perform “tree shaking” and exclude the rest unused code.
+### In web workers
 
 ```javascript
-import {Morse, Rydberg} from "./dist/potprox.min.mjs";
-```
-
-**Web workers:**
-
-```javascript
-importScripts("dist/potprox.min.js");
+importScripts("https://www.unpkg.com/potprox");
 ```
 
 ## Usage
@@ -63,7 +69,7 @@ importScripts("dist/potprox.min.js");
 Here is an example of approximation of some external computational data using the potprox module.
 
 ```javascript
-let potprox = require("potprox");
+import * as potprox from "potprox";
 
 // Computed numerical data on energy of interatomic binding
 // r - interatomic distance
@@ -80,7 +86,7 @@ let data = [
     {r: 6.0, e: -0.03028974},
     {r: 5.5, e: -0.03598181},
     {r: 5.0, e: -0.03234259},
-    {r: 4.5, e: 0.00189849}
+    {r: 4.5, e: 0.00189849},
 ];
 
 // Approximate with the Lennard-Jones potential

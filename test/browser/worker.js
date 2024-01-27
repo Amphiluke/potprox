@@ -12,7 +12,7 @@ self.addEventListener("message", ({data = {}}) => {
         result[name] = {
             potential: potential.toJSON(),
             rSqr: potential.rSqr(dataset),
-            points: [...potential.points({start: 5, end: 10, step: (10 - 5) / 9})]
+            points: [...potential.points({start: 5, end: 10, step: (10 - 5) / 9})],
         };
     });
     self.postMessage({type: "recalcDone", result});
