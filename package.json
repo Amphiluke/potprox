@@ -15,8 +15,7 @@
   "scripts": {
     "lint": "eslint src/**/*.mjs test/**/*.mjs",
     "test": "node --test test/potprox.test.mjs test/potentials/",
-    "build": "rollup -c",
-    "prepare": "husky"
+    "build": "rollup -c"
   },
   "files": [
     "dist",
@@ -43,7 +42,6 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "eslint": "^8.56.0",
-    "husky": "^9.0.6",
     "rollup": "^4.9.6"
   }
 }
