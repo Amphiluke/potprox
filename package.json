@@ -41,7 +41,7 @@
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "eslint": "^8.56.0",
-    "rollup": "^4.9.6"
+    "eslint": "^8.57.1",
+    "rollup": "^4.22.4"
   }
 }
