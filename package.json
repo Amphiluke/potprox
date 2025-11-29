@@ -13,8 +13,8 @@
   },
   "type": "module",
   "scripts": {
-    "lint": "eslint src/**/*.mjs test/**/*.mjs",
-    "test": "node --test test/potprox.test.mjs test/potentials/",
+    "lint": "eslint",
+    "test": "node --test \"test/**/*.test.mjs\"",
     "build": "rollup -c"
   },
   "files": [
@@ -40,8 +40,11 @@
   },
   "homepage": "https://amphiluke.github.io/potprox/",
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@rollup/plugin-terser": "^0.4.4",
-    "eslint": "^8.57.1",
-    "rollup": "^4.22.4"
+    "@stylistic/eslint-plugin": "^5.6.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "rollup": "^4.53.3"
   }
 }

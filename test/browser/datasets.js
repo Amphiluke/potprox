@@ -1,4 +1,4 @@
-self.datasets = {
+globalThis.datasets = {
     default: [
         // Data used in README’s examples
         {r: 10.0, e: 0},
